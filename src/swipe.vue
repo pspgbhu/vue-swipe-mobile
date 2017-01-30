@@ -1,7 +1,7 @@
 <!--
 slide 性能优化问题及总结：
 1.
-  问题：在手机上 touchend 后会出现短暂的卡顿。
+  问题：在手机上 touchend 事件触发后到下一帧渲染时的时间过长，造成直观上的卡顿。
 
   背景：slide 的滑动和 Vue 的 data 值高度耦合，同时还双向绑定了激活状态的索引，因此每次改变激活状态索引暨双向绑定的 value
        值的时候，都牵扯到大量的 vue 的内部计算。而 Vue 是异步执行 DOM 更新，只有在一个事件循环完成后才会去更新 Dom。
@@ -9,7 +9,7 @@ slide 性能优化问题及总结：
   方案：slide 滑动核心代码和 vue data数据解耦。同时为了保留双向绑定的特性，用到了 insideValue data值来同步激活索引，
        用 dataset.translatex 来同步滚动距离数据。
 
-  结果：Chrome DevTools Timeline 10 * slowdown：
+  结果：2.7 GHz Intel Core i5 Chrome DevTools Timeline 10 * slowdown：
        优化前：touchend事件触发后到下一帧渲染时的时间间隔 180ms
        优化后：touchend事件触发后到下一帧渲染时的时间间隔 40ms
  -->
@@ -40,7 +40,7 @@ export default {
       width: 0,
       insideValue: this.value,
       length: 0,
-      minMoveDistance: 60, // 成功触发切换 item 的最小滑动距离
+      minMoveDistance: 60, // 成功触发切换 item 的最小滑动距离，会在 mounted 后动态更新
     };
   },
 
@@ -83,12 +83,6 @@ export default {
 
     // 设定初始 translateX 位置
     this.ele.dataset.translatex = -(this.width * this.length);
-
-    // 为 item 添加类名
-    // this.$slots.item.forEach(val => {
-    //
-    //   val.elm.classList.add('c-slide-item');
-    // });
 
     // 初始化 item 长度
     this.length = this.$el.getElementsByClassName('c-slide-item').length;
