@@ -1,18 +1,53 @@
-# c-swipe
+# Vue-Cswipe.js
 
-> A Vue.js project
+> A swipe (touch slide) component for Vue2.x in mobile device.
 
-## Build Setup
+# Usage
 
-``` bash
-# install dependencies
-npm install
+register components:
 
-# serve with hot reload at localhost:8080
-npm run dev
+```js
+// main.js
+// import Vue files into main.js
+import Swipe from './components/vue-swipe.vue';
+import SwipeItem from './components/vue-swipe.vue';
 
-# build for production with minification
-npm run build
+// register components
+Vue.component('swipe', Swipe);
+Vue.component('swipe-item', SwipeItem);
+
 ```
 
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+Work on a Vue instance:
+
+```html
+<swipe v-model="index" style="text-align: center; line-height: 80px;">
+  <swipe-item style="height: 100px;">item1</swipe-item>
+  <swipe-item style="height: 100px;">item2</swipe-item>
+  <swipe-item style="height: 100px;">item3</swipe-item>
+</swipe>
+```
+
+```js
+new Vue({
+  // ...
+  // ...
+  // ...
+  data: function () {
+    return {
+      index: 0, // two way
+    };
+  },
+});
+```
+
+
+# Options
+
+| Option |  Description |
+| ------ |    -------   |
+| v-model| the value binding index of swipe-item, binding two way. |
+
+# License
+
+MIT
