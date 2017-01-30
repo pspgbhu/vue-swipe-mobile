@@ -32,7 +32,7 @@ slide 性能优化问题及总结：
 <script>
 
 export default {
-  name: 'v-slide',
+  name: 'swipe',
 
   data() {
     return {
