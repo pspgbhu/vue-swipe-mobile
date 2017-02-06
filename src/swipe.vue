@@ -111,6 +111,8 @@ export default {
       let moveDistance = 0;
       let startTranslateX = 0;
       let inindex = 0;
+      let canMove = true;
+      let firstMove = true;
 
       const setTranslateX = 'webkitTransform' in that.ele.style
       ? setTranslateXnormal
@@ -131,14 +133,36 @@ export default {
 
         // 取消过渡效果
         that.ele.style.transitionDuration = '0ms';
+
+        canMove = true;
+        firstMove = true;
       }
 
       function moveHandle(e) {
+
+        // 计算 X 轴移动距离
+        moveDistance = e.targetTouches[0].pageX - touchStartX;
+
+        // 第一次触发touchmove
+        if (firstMove) {
+          // 计算 Y 轴移动距离
+          moveDistanceY = e.targetTouches[0].pageY - touchStartY;
+
+          // 垂直滑动屏幕
+          if (Math.abs(moveDistance) < Math.abs(moveDistanceY)) {
+
+            canMove = false;
+          }
+
+          firstMove = false;
+        }
+
+        if (!canMove) {
+          return;
+        }
+
         // 主要是用来防止无意间的上下滑动
         e.preventDefault();
-
-        // 计算移动距离
-        moveDistance = e.targetTouches[0].pageX - touchStartX;
 
         // 判断最大值与最小值
         if (moveDistance > 0) {
@@ -159,6 +183,11 @@ export default {
       }
 
       function endHandle(e) {
+        // 禁止左右移动时
+        if (!canMove) return;
+
+        canMove = true;
+        firstMove = true;
 
         if (Math.abs(moveDistance) > Math.abs(that.minMoveDistance)) {
           // 左滑 👈
