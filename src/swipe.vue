@@ -30,7 +30,6 @@ slide 性能优化问题及总结：
 </template>
 
 <script>
-
 export default {
   name: 'swipe',
 
@@ -98,7 +97,9 @@ export default {
       this.width = parseInt(style, 10);
 
       // 初始化 minMoveDistance 最小触发距离
-      this.minMoveDistance = this.width / 5.5;
+      this.minMoveDistance = this.width / 5.5 < 100
+      ? this.width / 5.5
+      : 100;
     },
 
     core() {
