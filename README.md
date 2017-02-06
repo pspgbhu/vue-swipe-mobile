@@ -1,7 +1,7 @@
 # Vue-Cswipe.js
 
 > A swipe (touch slide) component for Vue2.x in mobile device.
-> Only support mobile device now.
+> Only support touch event now.
 
 # Usage
 
