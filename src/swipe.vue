@@ -134,6 +134,9 @@ export default {
       }
 
       function moveHandle(e) {
+        // 主要是用来防止无意间的上下滑动
+        e.preventDefault();
+
         // 计算移动距离
         moveDistance = e.targetTouches[0].pageX - touchStartX;
 
