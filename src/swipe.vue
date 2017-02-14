@@ -108,6 +108,7 @@ export default {
 
       let translateX = this.ele.dataset.translatex * 1;
       let touchStartX = 0;
+      let touchStartY = 0;
       let moveDistance = 0;
       let startTranslateX = 0;
       let inindex = 0;
@@ -129,6 +130,9 @@ export default {
 
         // 记录初始坐标
         touchStartX = e.targetTouches[0].pageX;
+        touchStartY = e.targetTouches[0].pageY;
+
+        // 记录 touchStart 时组件的 translatex 的值
         startTranslateX = translateX;
 
         // 取消过渡效果
@@ -146,7 +150,7 @@ export default {
         // 第一次触发touchmove
         if (firstMove) {
           // 计算 Y 轴移动距离
-          moveDistanceY = e.targetTouches[0].pageY - touchStartY;
+          const moveDistanceY = e.targetTouches[0].pageY - touchStartY;
 
           // 垂直滑动屏幕
           if (Math.abs(moveDistance) < Math.abs(moveDistanceY)) {
