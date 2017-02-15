@@ -48,10 +48,10 @@ new Vue({
 
 # Options
 
-| Option |  Description |
-| ------ |    -------   |
-| v-model| Number. The value binding index of swipe-item, binding two way. |
-| pagination | Boolean. If need default pagination. If you want to customize pagination, the value of v-model will help you make sure which item is showing. |
+| Option | Type | Defalut  | Description |
+| ------ | ---- | -------- | ----------- |
+| v-model| Number | 0 |The value binding index of swipe-item, binding two way. |
+| pagination | Boolean | true |If need default pagination. If you want to customize pagination, the value of v-model will help you make sure which item is showing. |
 
 # License
 
