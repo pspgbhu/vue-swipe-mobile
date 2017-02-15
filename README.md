@@ -13,8 +13,8 @@ register components:
 ```js
 // main.js
 // import Vue files into main.js
-import Swipe from './components/vue-swipe.vue';
-import SwipeItem from './components/vue-swipe.vue';
+import Swipe from '../src/vue-swipe.vue';
+import SwipeItem from '../src/vue-swipe.vue';
 
 // register components
 Vue.component('swipe', Swipe);
