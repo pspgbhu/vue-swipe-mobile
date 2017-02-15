@@ -1,4 +1,4 @@
-# C-Swipe Mobile
+# Vue2-C-Swipe Mobile
 
 > A swipe (touch slide) component for Vue2.x in mobile device.
 > Only support touch event now.
