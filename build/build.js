@@ -7,7 +7,16 @@ var path = require('path')
 var config = require('../config')
 var ora = require('ora')
 var webpack = require('webpack')
-var webpackConfig = require('./webpack.prod.conf')
+
+var webpackConfig = require('./webpack.prod.conf');
+
+console.log(webpackConfig.entry)
+if (env.NODE_ENV_EXAMPLE === 'y') {
+  webpackConfig.entry = {
+    main: './example/main.js'
+  };
+  env.NODE_ENV_EXAMPLE === 'n';
+}
 
 console.log(
   '  Tip:\n' +
