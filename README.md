@@ -4,6 +4,8 @@
 > Only support touch event now.
 
 > 一个简单的移动端卡片滑动组件，适用于Vue2.x
+
+
 # Usage
 
 register components:
