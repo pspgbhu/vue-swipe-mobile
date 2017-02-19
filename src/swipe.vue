@@ -80,11 +80,12 @@ export default {
     // 初始化 width，minMoveDistance
     this.resetPixel();
 
-    // 设定初始 translateX 位置
-    this.ele.dataset.translatex = -(this.width * this.length);
-
     // 初始化 item 长度
     this.length = this.$el.getElementsByClassName('c-slide-item').length;
+
+    // 设定初始 translateX 位置
+    // dataset 的 translatex 将在 core() 中决定swipe的初始 translatex 值
+    this.ele.dataset.translatex = -(this.width * this.value);
 
     // 执行核心函数
     this.core();
@@ -119,12 +120,23 @@ export default {
       ? setTranslateXnormal
       : setTranslateXsub;
 
+      // 初始化组件的 translatex
+      Object.assign(this.ele.style, {
+        webkitTransform: `translate3d(${translateX}px, 0, 0)`,
+        transform: `translate3d(${translateX}px, 0, 0)`,
+      });
+
+      this.ele.addEventListener('click', () => {
+        alert('click');
+      });
+
       this.ele.addEventListener('touchstart', startHandle);
       this.ele.addEventListener('touchmove', moveHandle);
       this.ele.addEventListener('touchend', endHandle);
       this.ele.addEventListener('touchcancel', endHandle);
 
       function startHandle(e) {
+
         // 先同步函数内部的 translateX
         translateX = that.ele.dataset.translatex * 1;
 
@@ -187,6 +199,7 @@ export default {
       }
 
       function endHandle(e) {
+
         // 禁止左右移动时
         if (!canMove) return;
 
