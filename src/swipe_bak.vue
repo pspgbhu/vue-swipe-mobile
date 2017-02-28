@@ -15,13 +15,15 @@ slide 性能优化问题及总结：
  -->
 
 <template>
-  <div class="c-swipe">
-    <div class="c-swipe-warpper">
+  <div class="c-slide">
+    <div class="c-slide-warpper">
       <slot></slot>
+      <slot name="item" class="c-slide-item"></slot>
+
     </div>
-    <div v-if="pagination" class="c-swipe-pagination">
-      <div class="c-swipe-pagination-bar">
-        <i v-for="item in length" :class="['c-swipe-pagination-item', item - 1 === insideValue ? 'active': '']"></i>
+    <div v-if="pagination" class="c-slide-pagination">
+      <div class="c-slide-pagination-bar">
+        <i v-for="item in length" :class="['c-slide-pagination-item', item - 1 === insideValue ? 'active': '']"></i>
       </div>
     </div>
   </div>
@@ -73,13 +75,13 @@ export default {
   mounted() {
 
     // 缓存dom节点
-    this.ele = this.$el.getElementsByClassName('c-swipe-warpper')[0];
+    this.ele = this.$el.getElementsByClassName('c-slide-warpper')[0];
 
     // 初始化 width，minMoveDistance
     this.resetPixel();
 
     // 初始化 item 长度
-    this.length = this.$el.getElementsByClassName('c-swipe-item').length;
+    this.length = this.$el.getElementsByClassName('c-slide-item').length;
 
     // 设定初始 translateX 位置
     // dataset 的 translatex 将在 core() 中决定swipe的初始 translatex 值
@@ -122,6 +124,10 @@ export default {
       Object.assign(this.ele.style, {
         webkitTransform: `translate3d(${translateX}px, 0, 0)`,
         transform: `translate3d(${translateX}px, 0, 0)`,
+      });
+
+      this.ele.addEventListener('click', () => {
+        alert('click');
       });
 
       this.ele.addEventListener('touchstart', startHandle);
@@ -266,22 +272,22 @@ export default {
 </script>
 
 <style lang="css">
-  .c-swipe{
+  .c-slide{
     width: 100%;
     overflow: hidden;
     position: relative;
   }
 
-  .c-swipe-warpper{
+  .c-slide-warpper{
     height: 100%;
     display: flex;
   }
 
-  .c-swipe-pagination{
+  .c-slide-pagination{
     position: relative;
     height: 0;
 
-    .c-swipe-pagination-bar{
+    .c-slide-pagination-bar{
       position: absolute;
       left: 0;
       right: 0;
@@ -296,7 +302,7 @@ export default {
 
   }
 
-  .c-swipe-pagination-item{
+  .c-slide-pagination-item{
     display: block;
     width: 8px;
     height: 4px;
