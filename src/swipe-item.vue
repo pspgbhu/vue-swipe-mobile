@@ -9,10 +9,3 @@ export default {
   name: 'swipe-item',
 }
 </script>
-
-<style lang="css">
-.c-swipe-item{
-  width: 100%;
-  flex-shrink: 0;
-}
-</style>
