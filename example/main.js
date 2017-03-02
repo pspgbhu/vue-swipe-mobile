@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import App from './App';
 
-import Cswipe from '../src/main.js';
+require('../dist/swipe.css');
+import Cswipe from '../dist/swipe.js';
 
 Vue.use(Cswipe);
 

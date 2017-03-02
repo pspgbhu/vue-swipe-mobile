@@ -14,7 +14,9 @@ register components:
 
 ```js
 // main.js
-// import Vue files into main.js
+// import c-swipe style files into main.js
+require('c-swipe/swipe.css');
+// import c-swipe files into main.js
 import swipe from 'c-swipe';
 
 // register components
