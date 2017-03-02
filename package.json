@@ -1,9 +1,18 @@
 {
   "name": "c-swipe",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Vue.js project",
   "author": "pspgbhu <brotherchun001@gmail.com>",
   "private": true,
+  "main": "src/main.js",
+  "keywords": [
+    "Vue",
+    "swipe",
+    "slide"
+  ],
+  "bugs": {
+    "url": "https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/issues"
+  },
   "scripts": {
     "dev": "node build/dev-server.js",
     "build": "node build/build.js",
