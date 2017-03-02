@@ -3,7 +3,6 @@
     <div class="c-swipe-warpper">
       <slot></slot>
     </div>
-    {{changing}}
     <div v-if="pagination" class="c-swipe-pagination">
       <div class="c-swipe-pagination-bar">
         <i v-for="item in length" :class="['c-swipe-pagination-item', item - 1 === insideValue ? 'active': '']"></i>
