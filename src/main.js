@@ -12,10 +12,10 @@ const install = (Vue, options = {}) => {
 
 /* istanbul ignore if */
 if (typeof window !== 'undefined' && window.Vue) {
-  console.log('install');
+
   install(window.Vue);
 };
 
 const Cswipe = { install };
-window.Cswipe = Cswipe;
+
 export default Cswipe;
