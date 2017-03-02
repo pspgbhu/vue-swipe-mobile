@@ -356,31 +356,32 @@ export default {
     transform: translate3d(-100%, 0, 0);
     position: absolute;
 
-    &.active{
-      transform: translate3d(0 ,0 ,0);
+  }
+  .c-swipe-item.active{
+    transform: translate3d(0 ,0 ,0);
 
-      & ~ .c-swipe-item{
-        transform: translate3d(100%, 0, 0);
-      }
-    }
+  }
+
+  .c-swipe-item.active ~ .c-swipe-item{
+    transform: translate3d(100%, 0, 0);
   }
 
   .c-swipe-pagination{
     position: relative;
     height: 0;
 
-    .c-swipe-pagination-bar{
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: -12px;
-      bottom: 0;
-      height: 4px;
+  }
+  .c-swipe-pagination-bar{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -12px;
+    bottom: 0;
+    height: 4px;
 
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-    }
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
   }
 
   .c-swipe-pagination-item{
@@ -392,9 +393,9 @@ export default {
     margin: 0 3px;
     transition: all .1s;
 
-    &.active{
-      width: 20px;
-      background-color: rgb(72,163,241);
-    }
+  }
+  .c-swipe-pagination-item.active{
+    width: 20px;
+    background-color: rgb(72,163,241);
   }
 </style>

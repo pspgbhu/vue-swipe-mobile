@@ -1,7 +1,7 @@
 {
   "name": "c-swipe",
-  "version": "1.0.1",
-  "description": "A Vue.js project",
+  "version": "1.0.2",
+  "description": "A swipe (touch slide) component for Vue2.x in mobile device.",
   "author": "pspgbhu <brotherchun001@gmail.com>",
   "main": "src/main.js",
   "keywords": [

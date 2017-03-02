@@ -5,6 +5,8 @@
 
 > 一个简单的移动端卡片滑动组件，适用于Vue2.x
 
+# Install
+`npm install c-swipe --save`
 
 # Usage
 
@@ -13,12 +15,10 @@ register components:
 ```js
 // main.js
 // import Vue files into main.js
-import Swipe from '../src/vue-swipe.vue';
-import SwipeItem from '../src/vue-swipe.vue';
+import swipe from 'c-swipe';
 
 // register components
-Vue.component('swipe', Swipe);
-Vue.component('swipe-item', SwipeItem);
+Vue.use(swipe);
 
 ```
 
