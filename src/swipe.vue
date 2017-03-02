@@ -70,8 +70,8 @@ export default {
       this.width = parseInt(style, 10);
 
       // 初始化 minMoveDistance 最小触发距离
-      this.minMoveDistance = this.width / 5.5 < 100
-      ? this.width / 5.5
+      this.minMoveDistance = this.width / 6 < 100
+      ? this.width / 6
       : 100;
     },
 
@@ -166,35 +166,35 @@ export default {
 
         touchendTime = new Date().getTime();
 
-        // 快速滑动
-        if ( 100 < touchendTime - touchstartTime < 300) {
+        // // 快速滑动
+        // if ( 100 < touchendTime - touchstartTime < 300) {
+        //
+        //   if (distance > 0 && that.insideValue > 0) {
+        //     changePage(that.insideValue - 1);
+        //
+        //   } else if (distance < 0 && that.insideValue < that.length - 1){
+        //
+        //     changePage(that.insideValue + 1);
+        //   }
+        //
+        // // 普通滑动
+        // } else {
+        //
+        // }
+        // prev
+        if (distance > that.minMoveDistance && that.insideValue > 0) {
+          changePage(that.insideValue - 1);
 
-          if (distance > 0 && that.insideValue > 0) {
-            changePage(that.insideValue - 1);
+          // next
+        } else if (distance < -that.minMoveDistance && that.insideValue < that.length - 1) {
+          changePage(that.insideValue + 1);
 
-          } else if (distance < 0 && that.insideValue < that.length - 1){
-
-            changePage(that.insideValue + 1);
+          // stay
+        } else if (
+          (distance > 0 && that.insideValue > 0) ||
+          (distance < 0 && that.insideValue < that.length - 1)) {
+            changePage(that.insideValue);
           }
-
-        // 普通滑动
-        } else {
-
-          // prev
-          if (distance > that.minMoveDistance && that.insideValue > 0) {
-            changePage(that.insideValue - 1);
-
-            // next
-          } else if (distance < -that.minMoveDistance && that.insideValue < that.length - 1) {
-            changePage(that.insideValue + 1);
-
-            // stay
-          } else if (
-            (distance > 0 && that.insideValue > 0) ||
-            (distance < 0 && that.insideValue < that.length - 1)) {
-              changePage(that.insideValue);
-          }
-        }
 
         // 全局distance 归 0;
         distance = 0;
@@ -307,7 +307,7 @@ export default {
       function duration(...args) {
         // 添加过渡效果
         args.forEach(val => {
-          that.pages[val].style.transitionDuration = '300ms';
+          that.pages[val].style.transitionDuration = '200ms';
 
           setTimeout(() => {
             that.pages[val].style.transitionDuration = '';
