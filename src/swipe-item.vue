@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="c-slide-item">
+  <div class="c-swipe-item">
     <slot></slot>
   </div>
 </template>
@@ -9,10 +9,3 @@ export default {
   name: 'swipe-item',
 }
 </script>
-
-<style lang="css">
-.c-slide-item{
-  width: 100%;
-  flex-shrink: 0;
-}
-</style>

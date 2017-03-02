@@ -48,10 +48,17 @@ new Vue({
 
 # Options
 
-| Option |  Description |
-| ------ |    -------   |
-| v-model| Number. The value binding index of swipe-item, binding two way. |
-| pagination | Boolean. If need default pagination. If you want to customize pagination, the value of v-model will help you make sure which item is showing. |
+| Option | Type | Defalut  | Description |
+| ------ | ---- | -------- | ----------- |
+| v-model| Number | 0 |The value binding index of swipe-item, binding two way. |
+| pagination | Boolean | true |If need default pagination. If you want to customize pagination, the value of v-model will help you make sure which item is showing. |
+
+# Preview
+Use the phone to scan the lower pattern for preview.
+
+用手机扫描下方二维码进行预览
+
+![c-swpie](https://pspgbhu.github.io/assets/img/c-swipe.png)
 
 # License
 
