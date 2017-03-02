@@ -10,7 +10,6 @@ var webpack = require('webpack')
 
 var webpackConfig = require('./webpack.prod.conf');
 
-console.log(webpackConfig.entry)
 if (env.NODE_ENV_EXAMPLE === 'y') {
   webpackConfig.entry = {
     main: './example/main.js'

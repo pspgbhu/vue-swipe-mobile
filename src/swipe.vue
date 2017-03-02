@@ -257,7 +257,6 @@ export default {
             forward = 'stay';
             break;
         }
-        console.log(forward);1
 
         // 根据滚动方向不同，产生不同的行为
         if (forward === 'next') {
