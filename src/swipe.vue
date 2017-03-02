@@ -3,6 +3,7 @@
     <div class="c-swipe-warpper">
       <slot></slot>
     </div>
+    {{changing}}
     <div v-if="pagination" class="c-swipe-pagination">
       <div class="c-swipe-pagination-bar">
         <i v-for="item in length" :class="['c-swipe-pagination-item', item - 1 === insideValue ? 'active': '']"></i>
@@ -88,7 +89,8 @@ export default {
       let touchendTime = 0;
       let isFirstMove = true; // flag
       let canMove = true; // flag
-      // let changing = false; // flag
+      let touching = false;
+      let moveForward = null;
 
       that.pages.forEach((val, index) => {
         // 单张卡片私有属性
@@ -98,11 +100,14 @@ export default {
         val.addEventListener('touchstart', handleStart);
         val.addEventListener('touchmove', handleMove);
         val.addEventListener('touchend', handleEnd);
+        val.addEventListener('touchcancel', handleEnd);
       });
 
 
       function handleStart(e) {
         if (that.changing) return;
+        if (touching) return;
+        touching = true;
 
         // 初始化 flag
         isFirstMove = true;
@@ -117,6 +122,7 @@ export default {
 
       function handleMove(e) {
         if (that.changing) return;
+        if (!touching) return;
 
         // 计算 X 轴移动距离
         distance = e.targetTouches[0].pageX - touchstartX;
@@ -156,6 +162,9 @@ export default {
       }
 
       function handleEnd(e) {
+        if (!touching) return;
+        touching = false;
+
         // 禁止左右滑动
         if (!canMove) {
           canMove = true;
@@ -166,39 +175,40 @@ export default {
 
         touchendTime = new Date().getTime();
 
-        // // 快速滑动
-        // if ( 100 < touchendTime - touchstartTime < 300) {
-        //
-        //   if (distance > 0 && that.insideValue > 0) {
-        //     changePage(that.insideValue - 1);
-        //
-        //   } else if (distance < 0 && that.insideValue < that.length - 1){
-        //
-        //     changePage(that.insideValue + 1);
-        //   }
-        //
-        // // 普通滑动
-        // } else {
-        //
-        // }
-        // prev
-        if (distance > that.minMoveDistance && that.insideValue > 0) {
-          changePage(that.insideValue - 1);
+        // 快速滑动
+        if ( 100 < touchendTime - touchstartTime < 300) {
 
-          // next
-        } else if (distance < -that.minMoveDistance && that.insideValue < that.length - 1) {
-          changePage(that.insideValue + 1);
+          if (distance > 0 && that.insideValue > 0) {
+            changePage(that.insideValue - 1);
 
-          // stay
-        } else if (
-          (distance > 0 && that.insideValue > 0) ||
-          (distance < 0 && that.insideValue < that.length - 1)) {
-            changePage(that.insideValue);
+          } else if (distance < 0 && that.insideValue < that.length - 1){
+
+            changePage(that.insideValue + 1);
           }
+
+        // 普通滑动
+        } else {
+
+          // prev
+          if (distance > that.minMoveDistance && that.insideValue > 0) {
+            changePage(that.insideValue - 1);
+
+            // next
+          } else if (distance < -that.minMoveDistance && that.insideValue < that.length - 1) {
+            changePage(that.insideValue + 1);
+
+            // stay
+          } else if (
+            (distance > 0 && that.insideValue > 0) ||
+            (distance < 0 && that.insideValue < that.length - 1)) {
+              changePage(that.insideValue);
+          }
+        }
 
         // 全局distance 归 0;
         distance = 0;
         isFirstMove = true;
+        moveForward = null;
       }
 
       function move(el, dstce) {
@@ -211,17 +221,16 @@ export default {
         const index = el.dataset.index;
         const prevTrans = dstce - that.width;
         const nextTrans = that.width + dstce;
-        let forward = null;
 
         // 向右滑动 prev
         if (index > 0 && dstce > 0) {
           doTranslate(that.pages[index - 1], prevTrans);
 
           // 左边卡片露出后，切换为右边卡片露出，保证左边卡片在正确的位置停留
-          if (forward === 'next' && index < that.length) {
+          if (moveForward === 'next' && index < that.length) {
             doTranslate(that.pages[parseInt(index) + 1], that.width);
           }
-          forward = 'prev';
+          moveForward = 'prev';
         }
 
         // 向左滑动 next
@@ -229,10 +238,10 @@ export default {
           doTranslate(that.pages[parseInt(index) + 1], nextTrans);
 
           // 左右切换滑动方向时，保证另外一方的卡片在正确的位置停留
-          if (forward === 'prev' && index > 0) {
+          if (moveForward === 'prev' && index > 0) {
             doTranslate(that.pages[index - 1], -that.width);
           }
-          forward = 'next';
+          moveForward = 'next';
         }
       }
 
@@ -243,7 +252,6 @@ export default {
 
       function changePage(index) {
         // 标记
-        that.changing = true;
         let forward = null;
         // 判断方向
         switch(true) {
@@ -276,6 +284,7 @@ export default {
           doTranslate(that.pages[parseInt(index) + 1], that.width);
 
         } else if (forward === 'stay') {
+
           if (distance > 0) {
             // 添加过渡效果
             duration(index, index - 1);
@@ -291,8 +300,12 @@ export default {
             // 执行动画
             doTranslate(that.pages[index], 0);
             doTranslate(that.pages[parseInt(index) + 1], that.width);
+          } else {
+            console.log('abba');
           }
+
         } else {
+          console.log('aa');
           that.changing = false;
         }
 
@@ -305,6 +318,7 @@ export default {
       }
 
       function duration(...args) {
+        that.changing = true;
         // 添加过渡效果
         args.forEach(val => {
           that.pages[val].style.transitionDuration = '200ms';
@@ -312,8 +326,10 @@ export default {
           setTimeout(() => {
             that.pages[val].style.transitionDuration = '';
             that.pages[val].style.transform = '';
+          }, 200);
+          setTimeout(() => {
             that.changing = false;
-          }, 300)
+          }, 250)
         });
       }
 
