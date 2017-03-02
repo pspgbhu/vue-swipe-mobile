@@ -23,6 +23,7 @@ export default {
       insideValue: this.value,
       length: 0,
       minMoveDistance: 60, // 成功触发切换 item 的最小滑动距离，会在 mounted 后动态更新
+      changing: false,
     };
   },
 
@@ -87,7 +88,7 @@ export default {
       let touchendTime = 0;
       let isFirstMove = true; // flag
       let canMove = true; // flag
-      let changing = false; // flag
+      // let changing = false; // flag
 
       that.pages.forEach((val, index) => {
         // 单张卡片私有属性
@@ -101,7 +102,7 @@ export default {
 
 
       function handleStart(e) {
-        if (changing) return;
+        if (that.changing) return;
 
         // 初始化 flag
         isFirstMove = true;
@@ -115,7 +116,7 @@ export default {
       }
 
       function handleMove(e) {
-        if (changing) return;
+        if (that.changing) return;
 
         // 计算 X 轴移动距离
         distance = e.targetTouches[0].pageX - touchstartX;
@@ -155,16 +156,13 @@ export default {
       }
 
       function handleEnd(e) {
-        if (changing) return;
-
         // 禁止左右滑动
         if (!canMove) {
           canMove = true;
           return;
         }
 
-        // 标记
-        changing = true;
+        if (that.changing) return;
 
         touchendTime = new Date().getTime();
 
@@ -244,7 +242,8 @@ export default {
       }
 
       function changePage(index) {
-
+        // 标记
+        that.changing = true;
         let forward = null;
         // 判断方向
         switch(true) {
@@ -258,7 +257,7 @@ export default {
             forward = 'stay';
             break;
         }
-        console.log(forward);
+        console.log(forward);1
 
         // 根据滚动方向不同，产生不同的行为
         if (forward === 'next') {
@@ -295,11 +294,15 @@ export default {
             doTranslate(that.pages[parseInt(index) + 1], that.width);
           }
         } else {
-          changing = false;
+          that.changing = false;
         }
 
         // 同步 vue 数据
-        that.insideValue = index;
+        if (that.insideValue != index) {
+          that.pages[that.insideValue].classList.remove('active');
+          that.pages[index].classList.add('active');
+          that.insideValue = index;
+        }
       }
 
       function duration(...args) {
@@ -308,9 +311,9 @@ export default {
           that.pages[val].style.transitionDuration = '300ms';
 
           setTimeout(() => {
-            that.pages[val].style.transitionDuration = '0ms';
-
-            changing = false;
+            that.pages[val].style.transitionDuration = '';
+            that.pages[val].style.transform = '';
+            that.changing = false;
           }, 300)
         });
       }
