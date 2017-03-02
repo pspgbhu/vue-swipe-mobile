@@ -3,7 +3,6 @@
   "version": "1.0.1",
   "description": "A Vue.js project",
   "author": "pspgbhu <brotherchun001@gmail.com>",
-  "private": true,
   "main": "src/main.js",
   "keywords": [
     "Vue",
