@@ -1,5 +1,5 @@
-import Swipe from '../src/swipe';
-import SwipeItem from '../src/swipe-item';
+import Swipe from './swipe.vue';
+import SwipeItem from './swipe-item.vue';
 
 const install = (Vue, options = {}) => {
   if (install.installed) return;

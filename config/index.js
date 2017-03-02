@@ -6,7 +6,7 @@ module.exports = {
     env: require('./prod.env'),
     index: path.resolve(__dirname, '../dist/index.html'),
     assetsRoot: path.resolve(__dirname, '../dist'),
-    assetsSubDirectory: 'static',
+    assetsSubDirectory: '',
     assetsPublicPath: '/pspgbhu.github.io/c-swipe/',
     // assetsPublicPath: '/D:/code/Vue2-C-Swipe-Mobile/dist',
     productionSourceMap: false,

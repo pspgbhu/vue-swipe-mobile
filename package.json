@@ -1,9 +1,9 @@
 {
   "name": "c-swipe",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A swipe (touch slide) component for Vue2.x in mobile device.",
   "author": "pspgbhu <brotherchun001@gmail.com>",
-  "main": "src/main.js",
+  "main": "dist/main.js",
   "keywords": [
     "Vue",
     "swipe",
@@ -15,6 +15,7 @@
   "scripts": {
     "dev": "node build/dev-server.js",
     "build": "node build/build.js",
+    "dist": "",
     "example": "cross-env NODE_ENV_EXAMPLE=y node build/build.js"
   },
   "dependencies": {
