@@ -13,6 +13,9 @@ export default {
       index: 0,
     };
   },
+
+  mounted() {
+  }
 };
 </script>
 

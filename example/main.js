@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import App from './App';
 
-import Cswipe from '../src/swipe.js';
+import { Swipe, SwipeItem } from '../src/main.js';
 
-Vue.use(Cswipe);
+Vue.component('swipe', Swipe);
+Vue.component('swipe-item', SwipeItem);
 
 const vm = new Vue({
   el: '#app',

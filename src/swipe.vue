@@ -20,12 +20,15 @@ export default {
       ele: {}, // 缓存 dom
       pages: [], // 缓存子元素 dom
       width: 0,
-      insideValue: this.value,
       length: 0,
+      distance: 0,
+      insideValue: this.value,
       minMoveDistance: 60, // 成功触发切换 item 的最小滑动距离，会在 mounted 后动态更新
       changing: false,
       moveForward: null,
-      distance: 0,
+      auto: false,
+      interval: null,
+      touchstartTime: 0,
     };
   },
 
@@ -40,6 +43,11 @@ export default {
       required: false,
       default: true,
     },
+    time: {
+      type: Number,
+      required: false,
+      default: 0,
+    }
   },
 
   watch: {
@@ -72,6 +80,9 @@ export default {
 
     // 执行核心函数
     this.core();
+
+    // 自动轮播
+    this.autoChange(this.time);
   },
 
   methods: {
@@ -93,7 +104,6 @@ export default {
       const that = this;
       let touchstartX = 0;
       let touchstartY = 0;
-      let touchstartTime = 0;
       let touchendTime = 0;
       let isFirstMove = true; // flag
       let canMove = true; // flag
@@ -124,7 +134,7 @@ export default {
         touchstartY = e.targetTouches[0].pageY;
 
         // 记录开始时间
-        touchstartTime = new Date().getTime();
+        that.touchstartTime = new Date().getTime();
       }
 
       function handleMove(e) {
@@ -183,7 +193,7 @@ export default {
         touchendTime = new Date().getTime();
 
         // 快速滑动
-        if ( 100 < touchendTime - touchstartTime < 300) {
+        if ( 100 < touchendTime - that.touchstartTime < 300) {
 
           if (that.distance > 0 && that.insideValue > 0) {
             that.changePage(that.insideValue - 1);
@@ -333,6 +343,22 @@ export default {
           this.changing = false;
         }, 250)
       });
+    },
+
+    autoChange(time) {
+      if (time === 0) return;
+      this.interval = setInterval(() => {
+        const now = new Date().getTime();
+        if (now - this.touchstartTime < (time > 3000 ? time : 3000)) return;
+
+        if (this.insideValue < this.length - 1) {
+
+          this.$emit('input', this.insideValue + 1);
+        } else {
+
+          this.$emit('input', 0);
+        }
+      }, time);
     },
   },
 };

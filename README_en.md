@@ -3,27 +3,27 @@
 > A swipe (touch slide) component for Vue2.x in mobile device.
 > Only support touch event now.
 
-> 一个简单的移动端卡片滑动轮播组件，适用于Vue2.x
+> 一个简单的移动端卡片滑动组件，适用于Vue2.x
 
 # Install
 `npm install c-swipe --save`
 
 # Usage
 
-注册组件
+register components:
 
 ```js
 // main.js
 
 // import c-swipe files into main.js
-import { Swipe, SwipeItem } from '../src/main.js';
+import swipe from 'c-swipe';
 
 // register components
-Vue.component('swipe', Swipe);
-Vue.component('swipe-item', SwipeItem);
+Vue.use(swipe);
+
 ```
 
-在Vue中使用:
+Work on a Vue instance:
 
 ```html
 <swipe v-model="index" style="text-align: center; line-height: 80px;">
@@ -49,13 +49,13 @@ new Vue({
 
 # Options
 
-| 选项 | 类型 | 默认  | 描述 |
+| Option | Type | Defalut  | Description |
 | ------ | ---- | -------- | ----------- |
-| v-model| Number | 0 | 绑定了当前显示卡片的索引，该数据为双向绑定，可通过更改 v-model 的值直接更改当前显示卡片 |
-| pagination | Boolean | true |是否需要默认样式的导航器. 如果你需要自定义导航器, v-model 的值将会给你提供一定的帮助 |
-| time | Number | 0 | 单位 ms，自动切换卡片的时间间隔，值为 0 时不自动切换|
+| v-model| Number | 0 |The value binding index of swipe-item, binding two way. |
+| pagination | Boolean | true |If need default pagination. If you want to customize pagination, the value of v-model will help you make sure which item is showing. |
 
 # Preview
+Use the phone to scan the lower pattern for preview.
 
 用手机扫描下方二维码进行预览
 
