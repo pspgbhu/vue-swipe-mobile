@@ -1,20 +1,28 @@
 <template lang="html">
-  <swipe v-model="index" class="slide">
-    <swipe-item class="item1" style="">item1</swipe-item>
-    <swipe-item class="item2" style="">item2</swipe-item>
-    <swipe-item class="item3" style="">item3</swipe-item>
-  </swipe>
+  <div class="">
+    <swipe v-model="index" class="slide" :time="3000">
+      <swipe-item v-for="i in item" :class="`item${i}`" style="">item{{ i }}</swipe-item>
+    </swipe>
+    <button id="button" type="button" name="button">button</button>
+  </div>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      index: 0,
+      index: 1,
+      item: 0,
     };
   },
 
   mounted() {
+    document.getElementById('button').onclick = () => {
+      this.index = this.index === 2 ? 0 : this.index + 1;
+    }
+    setTimeout(() => {
+      this.item = 3
+    }, 500)
   }
 };
 </script>

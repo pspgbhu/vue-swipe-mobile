@@ -7,5 +7,8 @@
 <script>
 export default {
   name: 'swipe-item',
+  mounted() {
+    this.$parent.$init();
+  },
 }
 </script>
