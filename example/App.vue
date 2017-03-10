@@ -12,7 +12,7 @@ export default {
   data() {
     return {
       index: 1,
-      item: 0,
+      item: 2,
     };
   },
 
@@ -20,9 +20,6 @@ export default {
     document.getElementById('button').onclick = () => {
       this.index = this.index === 2 ? 0 : this.index + 1;
     }
-    setTimeout(() => {
-      this.item = 3
-    }, 500)
   }
 };
 </script>

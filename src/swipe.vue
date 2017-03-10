@@ -76,7 +76,7 @@ export default {
 
       if (val == 0 && this.insideValue == this.length - 1) {
         this.changeForward = 'next';
-      } else if (val == this.length - 1 && this.insideValue == 0){
+      } else if (val == this.length - 1 && this.insideValue == 0 && this.length > 2){
         this.changeForward = 'prev';
       } else if (val > this.insideValue) {
         this.changeForward = 'next';
@@ -279,7 +279,9 @@ export default {
     },
 
     changePage(index, forward = this.changeForward) {
-
+      const leftIndex = this.leftIndex;
+      const rightIndex = this.rightIndex;
+      console.log(forward);
       // 根据滚动方向不同，产生不同的行为
       if (forward === 'next' || forward === 'prev') {
         const trans = forward === 'next' ? -this.width : this.width;
@@ -296,19 +298,19 @@ export default {
 
         if (this.distance > 0) {
           // 添加过渡效果
-          this.duration([index, index - 1]);
+          this.duration([index, leftIndex]);
 
           // 执行动画
           this.doTranslate(this.pages[index], 0);
-          this.doTranslate(this.pages[parseInt(index) - 1], -this.width);
+          this.doTranslate(this.pages[leftIndex], -this.width);
 
         } else if (this.distance < 0) {
           // 添加过渡效果
-          this.duration([index, parseInt(index) + 1]);
+          this.duration([index, rightIndex]);
 
           // 执行动画
           this.doTranslate(this.pages[index], 0);
-          this.doTranslate(this.pages[parseInt(index) + 1], this.width);
+          this.doTranslate(this.pages[rightIndex], this.width);
         } else {
 
         }
