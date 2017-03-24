@@ -55,6 +55,7 @@ new Vue({
 | ------ | ---- | -------- | ----------- |
 | v-model| Number | 0 | 绑定了当前显示卡片的索引，该数据为双向绑定，可通过更改 v-model 的值直接更改当前显示卡片 |
 | pagination | Boolean | true |是否需要默认样式的导航器. 如果你需要自定义导航器, v-model 的值将会给你提供一定的帮助 |
+| infinity | Boolean | true | 是否无限循环 |
 | time | Number | 0 | 单位 ms，自动切换卡片的时间间隔，值为 0 时不自动切换 |
 
 # Preview
