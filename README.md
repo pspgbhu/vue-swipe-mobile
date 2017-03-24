@@ -8,6 +8,8 @@
 # Install
 `npm install c-swipe --save`
 
+> 因为开发时是使用的es6，暂时没有进行es5转换，建议使用者使用babel转换后使用
+
 # Usage
 
 注册组件
