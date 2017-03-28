@@ -19,7 +19,10 @@ var webpackConfig = merge(baseWebpackConfig, {
   output: {
     path: config.build.assetsRoot,
     filename: utils.assetsPath('[name].js'),
-    chunkFilename: utils.assetsPath('[id].js')
+    chunkFilename: utils.assetsPath('[id].js'),
+    library: 'swipe',
+    libraryTarget: 'umd',
+    umdNameDefine: true,
   },
   vue: {
     loaders: utils.cssLoaders({

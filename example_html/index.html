@@ -51,9 +51,12 @@
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script type="text/javascript" src="../dist/swipe.js"></script>
     <script type="text/javascript">
-
       var vm = new Vue({
         el: '#app',
+        components: {
+          swipe: swipe.Swipe,
+          swipeItem: swipe.SwipeItem,
+        },
         data: function() {
           return {
             index: 0,
