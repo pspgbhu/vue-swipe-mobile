@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="">
-    <swipe v-model="index" class="slide" :time="3000">
+    <swipe class="slide" :infinity="false">
       <swipe-item v-for="i in item" :class="`item${i}`" style="">item{{ i }}</swipe-item>
     </swipe>
     <button id="button" type="button" name="button">button</button>
@@ -18,7 +18,7 @@ export default {
 
   mounted() {
     document.getElementById('button').onclick = () => {
-      this.index = this.index === 2 ? 0 : this.index + 1;
+      this.index = this.index === 1 ? 0 : this.index + 1;
     }
   }
 };

@@ -41,4 +41,6 @@ webpack(webpackConfig, function (err, stats) {
     chunks: false,
     chunkModules: false
   }) + '\n')
+
+  rm('-f', 'dist/index.html');
 })

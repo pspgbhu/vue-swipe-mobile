@@ -37,22 +37,18 @@ export default {
   props: {
     value: {
       type: Number,
-      required: true,
       default: 0,
     },
     pagination: {
       type: Boolean,
-      required: false,
       default: true,
     },
     time: {
       type: Number,
-      required: false,
       default: 0,
     },
     infinity: {
       type: Boolean,
-      required: false,
       default: true,
     }
   },
@@ -218,6 +214,7 @@ export default {
       function handleEnd(e) {
         if (!touching) return;
         touching = false;
+
         // 禁止左右滑动
         if (!canMove) {
           canMove = true;
@@ -235,9 +232,22 @@ export default {
 
           // prev
           if (that.changeForward === 'prev') {
+
+            if (!that.infinity && that.insideValue === 0) {
+              // 关闭无限滚动
+              return;
+            }
+
             that.changePage(that.leftIndex);
           // next
           } else if (that.changeForward === 'next'){
+
+            // 关闭无限滚动
+            if (!that.infinity && that.insideValue === that.length - 1) {
+              return;
+            }
+
+            // 正常滚动
             that.changePage(that.rightIndex);
           }
 
@@ -258,9 +268,21 @@ export default {
 
           // prev
           if (that.changeForward === 'prev') {
+
+            // 关闭无限滚动
+            if (!that.infinity && that.insideValue === 0) {
+              return;
+            }
+
             that.changePage(that.leftIndex);
           // next
           } else if (that.changeForward === 'next') {
+
+            // 关闭无限滚动
+            if (!that.infinity && that.insideValue === that.length - 1) {
+              return;
+            }
+
             that.changePage(that.rightIndex);
           // stay
           } else {
@@ -278,10 +300,13 @@ export default {
       }
     },
 
+    /**
+     *  切换页面
+     */
     changePage(index, forward = this.changeForward) {
       const leftIndex = this.leftIndex;
       const rightIndex = this.rightIndex;
-      console.log(forward);
+
       // 根据滚动方向不同，产生不同的行为
       if (forward === 'next' || forward === 'prev') {
         const trans = forward === 'next' ? -this.width : this.width;

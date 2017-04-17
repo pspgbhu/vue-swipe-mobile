@@ -15,14 +15,37 @@
 ```js
 // main.js
 
+// import css file
+require('c-swipe/dist/swipe.css');
+
 // import c-swipe files into main.js
-require('c-swipe/swipe.css');
 import { Swipe, SwipeItem } from 'c-swipe';
 
 // register components
 Vue.component('swipe', Swipe);
 Vue.component('swipe-item', SwipeItem);
 ```
+
+或直接通过标签引用
+
+```html
+<link href="../node-modules/c-swipe/dist/swipe.css" rel="stylesheet"></head>
+<script type="text/javascript" src="../node-modules/c-swipe/dist/swipe.js"></script>
+```
+```js
+const vueSwipe = swipe.Swipe;
+const vueSwipeItem = swipe.SwipeItem;
+
+new Vue({
+  el: 'body',
+  components: {
+    'swipe': vueSwipe,
+    'swipe-item': vueSwipeItem
+  }
+});
+
+```
+
 
 在Vue中使用:
 
