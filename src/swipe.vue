@@ -50,29 +50,29 @@ export default {
     infinity: {
       type: Boolean,
       default: true,
-    }
+    },
   },
 
   computed: {
     leftIndex() {
-      return this.insideValue == 0 ? this.length - 1 : this.insideValue - 1; // 左边卡片的索引
+      return this.insideValue === 0 ? this.length - 1 : this.insideValue - 1; // 左边卡片的索引
     },
     rightIndex() {
-      return this.insideValue == this.length - 1 ? 0 : this.insideValue + 1; // 右边卡片的索引
+      return this.insideValue === this.length - 1 ? 0 : this.insideValue + 1; // 右边卡片的索引
     },
   },
 
   watch: {
     insideValue(val) {
-      this.$emit('input', val)
+      this.$emit('input', val);
     },
 
     value(val) {
       if (val === this.insideValue) return;
 
-      if (val == 0 && this.insideValue == this.length - 1) {
+      if (val === 0 && this.insideValue === this.length - 1) {
         this.changeForward = 'next';
-      } else if (val == this.length - 1 && this.insideValue == 0 && this.length > 2){
+      } else if (val === this.length - 1 && this.insideValue === 0 && this.length > 2) {
         this.changeForward = 'prev';
       } else if (val > this.insideValue) {
         this.changeForward = 'next';
@@ -198,11 +198,11 @@ export default {
         // 关闭无限滚动
         if (!that.infinity) {
           // 左极限s
-          if (this.dataset.index == 0 && that.distance > 0) {
+          if (this.dataset.index === 0 && that.distance > 0) {
             return;
 
             // 右极限
-          } else if (this.dataset.index == that.length - 1 && that.distance < 0) {
+          } else if (this.dataset.index === that.length - 1 && that.distance < 0) {
             return;
           }
         }
@@ -225,7 +225,7 @@ export default {
         touchendTime = new Date().getTime();
 
         // 快速滑动
-        if ( 100 < touchendTime - that.touchstartTime && touchendTime - that.touchstartTime < 600) {
+        if (touchendTime - that.touchstartTime > 100 && touchendTime - that.touchstartTime < 600) {
 
           // 设置 changeForward
           that.changeForward = that.distance > 0 ? 'prev' : 'next';
@@ -240,7 +240,7 @@ export default {
 
             that.changePage(that.leftIndex);
           // next
-          } else if (that.changeForward === 'next'){
+          } else if (that.changeForward === 'next') {
 
             // 关闭无限滚动
             if (!that.infinity && that.insideValue === that.length - 1) {
@@ -255,7 +255,7 @@ export default {
         } else {
 
           // 设置 changeForward
-          switch(true) {
+          switch (true) {
             case (that.distance > that.minMoveDistance):
               that.changeForward = 'prev';
               break;
@@ -336,8 +336,6 @@ export default {
           // 执行动画
           this.doTranslate(this.pages[index], 0);
           this.doTranslate(this.pages[rightIndex], this.width);
-        } else {
-
         }
 
       } else {
@@ -346,7 +344,7 @@ export default {
       }
 
       // 同步 vue 数据
-      if (this.insideValue != index) {
+      if (this.insideValue !== index) {
         this.pages[this.insideValue].classList.remove('active');
         this.pages[index].classList.add('active');
         this.insideValue = index;
@@ -407,7 +405,7 @@ export default {
         }, time);
         setTimeout(() => {
           this.changing = false;
-        }, time)
+        }, time);
       });
     },
 
@@ -423,7 +421,7 @@ export default {
 
   beforeDestroy() {
     clearInterval(this.time);
-  }
+  },
 };
 </script>
 

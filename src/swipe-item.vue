@@ -10,5 +10,5 @@ export default {
   mounted() {
     this.$parent.$init();
   },
-}
+};
 </script>
