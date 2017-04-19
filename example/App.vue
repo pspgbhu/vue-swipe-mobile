@@ -19,8 +19,8 @@ export default {
   mounted() {
     document.getElementById('button').onclick = () => {
       this.index = this.index === 1 ? 0 : this.index + 1;
-    }
-  }
+    };
+  },
 };
 </script>
 

@@ -198,11 +198,11 @@ export default {
         // 关闭无限滚动
         if (!that.infinity) {
           // 左极限s
-          if (this.dataset.index === 0 && that.distance > 0) {
+          if (this.dataset.index * 1 === 0 && that.distance > 0) {
             return;
 
             // 右极限
-          } else if (this.dataset.index === that.length - 1 && that.distance < 0) {
+          } else if (this.dataset.index * 1 === that.length - 1 && that.distance < 0) {
             return;
           }
         }

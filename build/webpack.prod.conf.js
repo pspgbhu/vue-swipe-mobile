@@ -9,9 +9,6 @@ var HtmlWebpackPlugin = require('html-webpack-plugin')
 var env = config.build.env
 
 var webpackConfig = merge(baseWebpackConfig, {
-  entry: {
-    'swipe': './src/main.js',
-  },
   module: {
     loaders: utils.styleLoaders({ sourceMap: config.build.productionSourceMap, extract: true })
   },
@@ -102,4 +99,8 @@ if (config.build.productionGzip) {
   )
 }
 
+delete webpackConfig.entry;
+webpackConfig.entry = {
+  'swipe': './src/main.js',
+}
 module.exports = webpackConfig

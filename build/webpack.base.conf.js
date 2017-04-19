@@ -12,6 +12,9 @@ var cssSourceMapProd = (env === 'production' && config.build.productionSourceMap
 var useCssSourceMap = cssSourceMapDev || cssSourceMapProd
 
 module.exports = {
+  entry: {
+    main: './example/main.js'
+  },
   output: {
     path: config.build.assetsRoot,
     publicPath: process.env.NODE_ENV === 'production' ? config.build.assetsPublicPath : config.dev.assetsPublicPath,
@@ -32,6 +35,26 @@ module.exports = {
     fallback: [path.join(__dirname, '../node_modules')]
   },
   module: {
+    preLoaders: [
+      {
+        test: /\.vue$/,
+        loader: 'eslint',
+        include: [
+          path.join(projectRoot, 'src'),
+          path.join(projectRoot, 'example')
+        ],
+        exclude: /node_modules/
+      },
+      {
+        test: /\.js$/,
+        loader: 'eslint',
+        include: [
+          path.join(projectRoot, 'src'),
+          path.join(projectRoot, 'example')
+        ],
+        exclude: /node_modules/
+      }
+    ],
     loaders: [
       {
         test: /\.vue$/,
@@ -67,6 +90,9 @@ module.exports = {
         }
       }
     ]
+  },
+  eslint: {
+    formatter: require('eslint-friendly-formatter')
   },
   vue: {
     loaders: utils.cssLoaders({ sourceMap: useCssSourceMap }),
