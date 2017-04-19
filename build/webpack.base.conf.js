@@ -41,7 +41,8 @@ module.exports = {
         loader: 'eslint',
         include: [
           path.join(projectRoot, 'src'),
-          path.join(projectRoot, 'example')
+          path.join(projectRoot, 'example'),
+          path.join(projectRoot, 'test')
         ],
         exclude: /node_modules/
       },
@@ -50,7 +51,8 @@ module.exports = {
         loader: 'eslint',
         include: [
           path.join(projectRoot, 'src'),
-          path.join(projectRoot, 'example')
+          path.join(projectRoot, 'example'),
+          path.join(projectRoot, 'test')
         ],
         exclude: /node_modules/
       }
@@ -65,7 +67,8 @@ module.exports = {
         loader: 'babel',
         include: [
           path.join(projectRoot, 'src'),
-          path.join(projectRoot, 'example')
+          path.join(projectRoot, 'example'),
+          path.join(projectRoot, 'test')
         ],
         exclude: /node_modules/
       },
