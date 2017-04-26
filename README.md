@@ -10,7 +10,7 @@
 
 ---
 
-# [中文文档](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/blob/master/README_CN.md)
+## [中文文档](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/blob/master/README_CN.md)
 
 
 ## Install
