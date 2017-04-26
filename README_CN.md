@@ -8,17 +8,14 @@
 > A swipe (touch slide) component for Vue2.x in mobile device.
 > Only support touch event now.
 
----
+> 一个简单的移动端卡片滑动轮播组件，适用于Vue2.x
 
-# [中文文档](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/blob/master/README_CN.md)
-
-
-## Install
+# Install
 `npm install c-swipe --save`
 
-## Usage
+# Usage
 
-register components:
+注册组件
 
 ```js
 // main.js
@@ -33,8 +30,7 @@ import { Swipe, SwipeItem } from 'c-swipe';
 Vue.component('swipe', Swipe);
 Vue.component('swipe-item', SwipeItem);
 ```
-
-Use in `.vue` files.
+在 `.vue` 文件中使用:
 
 ```html
 <swipe v-model="index" style="text-align: center; line-height: 80px; height: 100px;">
@@ -54,7 +50,7 @@ new Vue({
 });
 ```
 
-*Or, you want import it by html tag*
+*或者，你想在 html 标签中直接引用*
 ```html
 <link href="../node-modules/c-swipe/dist/swipe.css" rel="stylesheet"></head>
 <script type="text/javascript" src="../node-modules/c-swipe/dist/swipe.js"></script>
@@ -72,19 +68,18 @@ new Vue({
 });
 ```
 
+# Options
 
-
-## Options
-
-| Option | Type | Defalut  | Description |
+| 选项 | 类型 | 默认  | 描述 |
 | ------ | ---- | -------- | ----------- |
-| v-model| Number | 0 |The value binding index of swipe-item |
-| pagination | Boolean | true |If need default pagination.|
-| infinity | Boolean | true | infinite loop |
-| time | Number | 0 | ms, interval of change card. The card will not auto change when this value is equal to 0
+| v-model| Number | 0 | 绑定了当前显示卡片的索引，该数据为双向绑定，可通过更改 v-model 的值直接更改当前显示卡片 |
+| pagination | Boolean | true | 是否需要默认样式的导航器 |
+| infinity | Boolean | true | 是否无限循环 |
+| time | Number | 0 | 单位 ms，自动切换卡片的时间间隔，值为 0 时不自动切换 |
 
-## Preview
-To scan the lower pattern for preview.
+# Preview
+
+用手机扫描下方二维码进行预览
 
 ![c-swpie](https://pspgbhu.github.io/assets/img/c-swipe.png)
 
