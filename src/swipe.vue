@@ -170,7 +170,7 @@ export default {
       function handleMove(e) {
         if (that.changing) return;
         if (!touching) return;
-
+        console.log(e);
         // 计算 X 轴移动距离
         that.distance = e.targetTouches[0].pageX - touchstartX;
 
@@ -392,16 +392,23 @@ export default {
       el.style.webkitTransform = `translate3d(${trans}px, 0, 0)`;
     },
 
+    /**
+     *  添加和删除过渡效果
+     *  @param  {Array} args 需要添加过渡动画的元素数组
+     */
     duration(args) {
       const time = this.auto ? 400 : 300;
       this.changing = true;
       // 添加过渡效果
       args.forEach(val => {
         this.pages[val].style.transitionDuration = `${time}ms`;
+        this.pages[val].style.webkitTransitionDuration = `${time}ms`;
 
         setTimeout(() => {
           this.pages[val].style.transitionDuration = '';
+          this.pages[val].style.webkitTransitionDuration = '';
           this.pages[val].style.transform = '';
+          this.pages[val].style.webkitTransform = '';
         }, time);
         setTimeout(() => {
           this.changing = false;
