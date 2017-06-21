@@ -67,6 +67,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    speed: {    // 切换屏幕的速度
+      type: Number,
+      default: 300,
+    },
   },
 
   computed: {
@@ -75,11 +79,14 @@ export default {
   watch: {
     insideValue(val) {
       this.$emit('input', val);
+      this.changePage(val);
     },
 
     value(val) {
-      if (val === this.insideValue) return;
-      this.changePage(val);
+      if (val === this.insideValue) {
+        return;
+      }
+      this.insideValue = val;
     },
   },
 
@@ -112,7 +119,7 @@ export default {
 
       // 初始卡片位置
       this.translate = -(this.width * this.insideValue);
-      this.setTranslate(this.ele, this.translate);
+      this.setTranslate(this.translate);
 
       // 执行核心函数
       this.core();
@@ -201,13 +208,28 @@ export default {
         // follow
         if (that.follow) {
           const distance = startTranslateX + moveDistance;
-          that.doTranslate(that.ele, distance);
+          that.doTranslate(distance);
         }
       }
 
       function endHandle(e) {
         that.translate = startTranslateX + moveDistance;
 
+        // slide to right
+        if (
+          moveDistance > 0 &&
+          that.insideValue > 0
+          ) {
+          that.insideValue -= 1;
+
+        // slide to left
+
+        } else if (
+          moveDistance < 0 &&
+          that.insideValue < that.length - 1
+        ) {
+          that.insideValue += 1;
+        }
 
         // reset all variables
         firstMove = true;
@@ -215,22 +237,13 @@ export default {
       }
     },
 
-    /**
-     *  切换页面
-     */
-
-    changePage(index, forward = this.changeForward) {
-
-    },
-
     move(el, dstce) {
 
     },
 
 
-    doTranslate(el, trans) {
-      console.log(el);
-      this.setTranslate(el, trans);
+    doTranslate(trans) {
+      this.setTranslate(trans);
     },
 
     /**
@@ -239,35 +252,45 @@ export default {
     *  @param  {number, string}  trans    进行变换的值
     */
 
-    setTranslate(el, trans) {
-      if ('transform' in el.style) {
+    setTranslate(trans) {
+      if ('transform' in this.ele.style) {
         this.doTranslate = transform;
-        this.doTranslate(el, trans);
+        this.doTranslate(trans);
 
       } else {
         this.doTranslate = webkitTransform;
-        this.doTranslate(el, trans);
+        this.doTranslate(trans);
       }
 
-      function transform(el, trans) {
+      function transform(trans) {
         console.log('normal');
-        el.style.transform = `translate3d(${trans}px, 0, 0)`;
-        el.style.transform = `webkikTranslate3d(${trans}px, 0, 0)`;
+        this.ele.style.transform = `translate3d(${trans}px, 0, 0)`;
+        this.ele.style.transform = `webkikTranslate3d(${trans}px, 0, 0)`;
       }
 
       function webkitTransform(el, trans) {
         console.log('sub');
-        el.style.webkitTransform = `translate3d(${trans}px, 0, 0)`;
-        el.style.webkitTransform = `webkitTranslate3d(${trans}px, 0, 0)`;
+        this.ele.style.webkitTransform = `translate3d(${trans}px, 0, 0)`;
+        this.ele.style.webkitTransform = `webkitTranslate3d(${trans}px, 0, 0)`;
       }
     },
 
     /**
-     *  添加和删除过渡效果
-     *  @param  {Array} args 需要添加过渡动画的元素数组
+     *  切换页面
      */
 
-    duration(args) {
+    changePage(index) {
+      this.insideValue = index;
+      this.duration();
+      const translate = -(this.width * this.insideValue);
+      this.doTranslate(translate);
+    },
+
+    /**
+     *  添加和删除过渡效果
+     */
+
+    duration() {
 
     },
 
