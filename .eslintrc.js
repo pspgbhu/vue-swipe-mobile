@@ -41,6 +41,7 @@ module.exports = {
     "padded-blocks": 0,
     "prefer-const": 1,
     "linebreak-style":0,
-    "max-len":0
+    "max-len":0,
+    "no-shadow": 0,
   }
 }

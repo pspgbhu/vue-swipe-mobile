@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="">
-    <swipe class="slide" :infinity="false">
+    <swipe class="slide" :loop="false" v-model="index">
       <swipe-item v-for="i in item" :class="`item${i}`" style="">item{{ i }}</swipe-item>
     </swipe>
     <button id="button" type="button" name="button">button</button>
@@ -12,7 +12,7 @@ export default {
   data() {
     return {
       index: 1,
-      item: 2,
+      item: 5,
     };
   },
 
@@ -48,6 +48,14 @@ export default {
   .item3{
     height: 200px;
     background: #33f
+  }
+  .item4{
+    height: 200px;
+    background: #c8e
+  }
+  .item5{
+    height: 200px;
+    background: #3ee
   }
   .slide .c-slide-pagination-item.active{
     background-color: #fff;

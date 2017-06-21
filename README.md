@@ -80,8 +80,8 @@ new Vue({
 | ------ | ---- | -------- | ----------- |
 | v-model| Number | 0 |The value binding index of swipe-item |
 | pagination | Boolean | true |If need default pagination.|
-| infinity | Boolean | true | infinite loop |
-| time | Number | 0 | ms, interval of change card. The card will not auto change when this value is equal to 0
+| loop | Boolean | true | loop move |
+| time | Number | 0 | ms, interval time of change card. The card will not auto change when this value is equal to 0
 
 ## Preview
 To scan the lower pattern for preview.
