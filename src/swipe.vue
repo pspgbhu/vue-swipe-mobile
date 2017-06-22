@@ -26,11 +26,6 @@ export default {
       touchstartTime: 0,
       translate: 0,
       insideValue: this.value,
-      changing: false,
-      auto: false, // 区分是自动滑动 还是手动滑动
-      forward: 'next',
-      moveForward: null,
-      changeForward: null,
       interval: null,
       transitionTimeout: null,
     };
@@ -93,6 +88,10 @@ export default {
 
       // number px
       return this.minMoveDistance * 1;
+    },
+
+    isAutoChange() {
+      return this.time === 0;
     },
   },
 
@@ -158,7 +157,7 @@ export default {
       this.core();
 
       // 自动轮播
-      this.autoChange(this.time);
+      this.autoChange();
     },
 
     $clearAuto() {
@@ -189,6 +188,12 @@ export default {
 
       function startHandle(e) {
 
+        // 如果有计时器，则清除计时器
+        if (this.interval || this.time !== 0) {
+          clearInterval(this.interval);
+          this.interval = null;
+        }
+
         // 清零
         moveDistance = 0;
         moveDistanceY = 0;
@@ -202,7 +207,6 @@ export default {
 
         // 记录开始滑动时的 translate 的值
         startTranslateX = that.translate;
-
 
         canMove = true;
         firstMove = true;
@@ -241,6 +245,27 @@ export default {
 
         const translate = startTranslateX + moveDistance;
 
+        // loop
+        if (that.loop) {
+
+          // slide to right prev
+          if (
+            moveDistance > 0 &&
+            translate > -that.width
+          ) {
+            startTranslateX = -(that.width * (that.length + 1));
+            return;
+          }
+
+          // slide to left next
+          if (
+            moveDistance < 0 &&
+            translate < -(that.width * that.length)
+          ) {
+            startTranslateX = 0;
+          }
+        }
+
         // 无弹性 无循环
         if (
           (!that.loop && !that.flexible) &&
@@ -259,11 +284,15 @@ export default {
         firstMove = true;
         canMove = true;
 
+        // if need to auto change, recover interval
+        if (this.time !== 0) {
+          that.autoChange();
+        }
+
         const touchEndTime = new Date().getTime();
 
         // Dont less than 10px
         if (Math.abs(moveDistance) < 10) {
-          console.log(1);
           that.changePage(that.insideValue);
           return;
         }
@@ -274,7 +303,6 @@ export default {
           Math.abs(moveDistance) < Math.abs(that.insideMinMoveDistance)
         ) {
 
-          console.log(2);
           that.changePage(that.insideValue);
           return;
         }
@@ -294,9 +322,7 @@ export default {
             that.insideValue === 0
           ) {
 
-            console.log(translate, translate - (that.width * that.length));
             // reset translate position
-            that.setTranslate(translate - (that.width * that.length));
             that.insideValue = that.length - 1;
             return;
           }
@@ -306,11 +332,21 @@ export default {
           return;
         }
 
-        // succeed in sliding to right prev
+        // succeed in sliding to left next
         if (
           moveDistance < 0 &&
-          that.insideValue < that.length - 1
+          that.insideValue <= that.length - 1
         ) {
+
+          // loop
+          if (
+            that.loop &&
+            that.insideValue === that.length - 1
+          ) {
+
+            that.insideValue = 0;
+            return;
+          }
 
           that.insideValue += 1;
           return;
@@ -413,7 +449,16 @@ export default {
     *  @param  {Number} time The interval time of change cards.
     */
 
-    autoChange(time) {
+    autoChange() {
+      if (this.time === 0) {
+        return;
+      }
+
+      this.interval = setInterval(() => {
+        this.insideValue = this.insideValue === this.length - 1
+          ? 0
+          : this.insideValue + 1;
+      }, this.time);
     },
 
     calcTrans() {
