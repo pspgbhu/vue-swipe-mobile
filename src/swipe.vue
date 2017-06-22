@@ -15,6 +15,7 @@
 export default {
   name: 'swipe',
 
+
   data() {
     return {
       ele: null,  // wrapper dom
@@ -35,6 +36,7 @@ export default {
     };
   },
 
+
   props: {
     value: {
       type: Number,
@@ -50,7 +52,7 @@ export default {
     },
     loop: {   // 循环滑动
       type: Boolean,
-      default: false,
+      default: true,
     },
     minMoveDistance: {
       type: String,
@@ -72,7 +74,12 @@ export default {
       type: Number,
       default: 300,
     },
+    flexible: {  // 卡片拉倒底部后是否能拉出底色
+      type: Boolean,
+      default: false,
+    },
   },
+
 
   computed: {
     insideMinMoveDistance() {
@@ -82,13 +89,13 @@ export default {
       if (minMoveDistance.indexOf('%') > -1) {
         const percent = minMoveDistance.split('%')[0] * 0.01;
         return this.width * percent;
-
-      // number px
       }
 
+      // number px
       return this.minMoveDistance * 1;
     },
   },
+
 
   watch: {
     insideValue(val) {
@@ -104,13 +111,28 @@ export default {
     },
   },
 
+
   mounted() {
     this.$init();
+
+    // 添加头尾
+    const list = this.$el.getElementsByClassName('c-swipe-item');
+    const parent = list[0].parentNode;
+    const first = list[0].cloneNode(true);
+    const last = list[list.length - 1].cloneNode(true);
+
+    // Add head
+    parent.insertBefore(last, list[0]);
+
+    // Add foot
+    parent.appendChild(first);
   },
 
+
   beforeDestroy() {
-    clearInterval(this.time);
+    clearInterval(this.interval);
   },
+
 
   methods: {
     $init() {
@@ -129,7 +151,7 @@ export default {
       this.initWidth();
 
       // 初始卡片位置
-      this.translate = -(this.width * this.insideValue);
+      this.translate = this.calcTrans();
       this.setTranslate(this.translate);
 
       // 执行核心函数
@@ -212,13 +234,23 @@ export default {
         // 主要是用来防止无意间的上下滑动
         e.preventDefault();
 
-        // 手指右划 👉
-
-        // follow
-        if (that.follow) {
-          const distance = startTranslateX + moveDistance;
-          that.setTranslate(distance);
+        // Not follow
+        if (!that.follow) {
+          return;
         }
+
+        const translate = startTranslateX + moveDistance;
+
+        // 无弹性 无循环
+        if (
+          (!that.loop && !that.flexible) &&
+          (translate >= -that.width || translate <= -((that.length - 1) * that.width))  // touch the boundary of left prev
+        ) {
+
+          return;
+        }
+
+        that.setTranslate(translate);
       }
 
       function endHandle(e) {
@@ -231,6 +263,7 @@ export default {
 
         // Dont less than 10px
         if (Math.abs(moveDistance) < 10) {
+          console.log(1);
           that.changePage(that.insideValue);
           return;
         }
@@ -241,35 +274,7 @@ export default {
           Math.abs(moveDistance) < Math.abs(that.insideMinMoveDistance)
         ) {
 
-          that.changePage(that.insideValue);
-          return;
-        }
-
-        // quick slide
-        if (
-          (touchEndTime - touchStartTime) < that.quickTouchTime
-        ) {
-
-          // succeed in sliding to right prev
-          if (
-            moveDistance > 0 &&
-            that.insideValue > 0
-          ) {
-            console.log(31);
-            that.insideValue -= 1;
-            return;
-          }
-
-          // succeed in sliding to left next
-          if (
-            moveDistance < 0 &&
-            that.insideValue < that.length - 1
-          ) {
-            console.log(32);
-            that.insideValue += 1;
-            return;
-          }
-
+          console.log(2);
           that.changePage(that.insideValue);
           return;
         }
@@ -278,8 +283,25 @@ export default {
         // succeed in sliding to right prev
         if (
           moveDistance > 0 &&
-          that.insideValue > 0
+          that.insideValue >= 0
         ) {
+
+          const translate = startTranslateX + moveDistance;
+
+          // loop
+          if (
+            that.loop &&
+            that.insideValue === 0
+          ) {
+
+            console.log(translate, translate - (that.width * that.length));
+            // reset translate position
+            that.setTranslate(translate - (that.width * that.length));
+            that.insideValue = that.length - 1;
+            return;
+          }
+
+          // not loop
           that.insideValue -= 1;
           return;
         }
@@ -289,6 +311,35 @@ export default {
           moveDistance < 0 &&
           that.insideValue < that.length - 1
         ) {
+
+          that.insideValue += 1;
+          return;
+        }
+
+        // not quick slide
+        if ((touchEndTime - touchStartTime) > that.quickTouchTime) {
+          that.changePage(that.insideValue);
+          return;
+        }
+
+        // below is quick slide
+
+        // succeed in sliding to right prev
+        if (
+          moveDistance > 0 &&
+          that.insideValue > 0
+        ) {
+
+          that.insideValue -= 1;
+          return;
+        }
+
+        // succeed in sliding to left next
+        if (
+          moveDistance < 0 &&
+          that.insideValue < that.length - 1
+        ) {
+
           that.insideValue += 1;
           return;
         }
@@ -301,7 +352,6 @@ export default {
     move(el, dstce) {
 
     },
-
 
     // doTranslate(trans) {
     //   this.setTranslate(trans);
@@ -335,19 +385,19 @@ export default {
     },
 
     /**
-     *  切换页面
-     */
+    *  切换页面
+    */
 
     changePage(index) {
       this.insideValue = index;
       this.duration();
-      this.translate = -(this.width * this.insideValue);
+      this.translate = this.calcTrans();
       this.setTranslate(this.translate);
     },
 
     /**
-     *  添加和删除过渡效果
-     */
+    *  添加和删除过渡效果
+    */
 
     duration() {
       clearTimeout(this.transitionTimeout);
@@ -359,15 +409,15 @@ export default {
     },
 
     /**
-     *  Auto change cards
-     *  @param  {Number} time The interval time of change cards.
-     */
+    *  Auto change cards
+    *  @param  {Number} time The interval time of change cards.
+    */
 
     autoChange(time) {
+    },
 
-      // if (time === 0) {
-      //   return;
-      // }
+    calcTrans() {
+      return -(this.width * (this.insideValue + 1));
     },
   },
 };
@@ -382,8 +432,6 @@ export default {
     height: 100%;
     display: flex;
     flex-direction: row;
-
-    transition-timing-function: ease-out;
   }
 
   .c-swipe-item{

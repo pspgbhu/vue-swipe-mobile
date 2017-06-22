@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="">
-    <swipe class="slide" :loop="false" v-model="index">
+    <swipe class="slide" v-model="index">
       <swipe-item v-for="i in item" :class="`item${i}`" style="">item{{ i }}</swipe-item>
     </swipe>
     <button id="button" type="button" name="button">button</button>
