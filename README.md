@@ -82,6 +82,9 @@ new Vue({
 | pagination | Boolean | true |If need default pagination.|
 | loop | Boolean | true | loop move |
 | time | Number | 0 | ms, interval time of change card. The card will not auto change when this value is equal to 0
+|minMoveDistance | String | '20%' | If to pass a percent just like '20%', the minimum distance that trigger to change card is 20% of the card's width. Or to pass a number such as '80', the minimum distance that trigger to change page is 80px.
+| follow | Boolean | true | If moving follow the finger.
+| speed | Number | 300 | ms, the spend time of change card.
 
 ## Preview
 To scan the lower pattern for preview.

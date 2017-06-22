@@ -4,6 +4,4 @@
 * [ ] 函数节流
 
 
-## New Options 
-
-* [ ] Free mode
+## New Options
