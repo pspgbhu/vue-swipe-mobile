@@ -85,6 +85,7 @@ new Vue({
 |minMoveDistance | String | '20%' | If to pass a percent just like '20%', the minimum distance that trigger to change card is 20% of the card's width. Or to pass a number such as '80', the minimum distance that trigger to change page is 80px.
 | follow | Boolean | true | If moving follow the finger.
 | speed | Number | 300 | ms, the spend time of change card.
+| flexible | Boolean | false | If the value is true, could to keep going slide at outside the boundary . It will not work while the value of loop is true.
 
 ## Preview
 To scan the lower pattern for preview.
