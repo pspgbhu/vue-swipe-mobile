@@ -18,7 +18,10 @@
     "example": "cross-env node build/build.js",
     "lint": "eslint --ext .js,.vue src",
     "unit": "karma start test/unit/karma.conf.js --single-run",
-    "test": "npm run unit"
+    "test": "npm run unit",
+    "preversion": "npm run lint",
+    "version": "npm run build && git add -A dist",
+    "postversion": "npm run publish && git push --follow-tags"
   },
   "dependencies": {
     "c-swipe": "^1.1.3",
