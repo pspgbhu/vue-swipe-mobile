@@ -5,7 +5,7 @@
     </div>
     <div v-if="pagination" class="c-swipe-pagination">
       <div class="c-swipe-pagination-bar">
-        <i v-for="item in length" :class="['c-swipe-pagination-item', item - 1 === insideValue ? 'active': '']"></i>
+        <i v-for="item in length" :class="['c-swipe-pagination-item', item - 1 === insideValue ? 'active': '']" :key="item"></i>
       </div>
     </div>
   </div>
@@ -92,6 +92,31 @@ export default {
 
     isAutoChange() {
       return this.time === 0;
+    },
+
+    // -1 mean that far left
+    // 0 mean that not far left or right
+    // 1 mean that far right
+    atBoundaryInMoving() {
+      if (!this.loop) {
+        return 0;
+      }
+
+      if (
+        this.insideValue === 0 &&
+        this.translate === -this.width
+      ) {
+        return -1;
+      }
+
+      if (
+        this.insideValue === this.length - 1 &&
+        this.translate === -(this.width * this.length)
+      ) {
+        return 1;
+      }
+
+      return 0;
     },
   },
 
@@ -230,43 +255,44 @@ export default {
           firstMove = false;
         }
 
-        // 是否水平滑动
+        // 如果是垂直滑动，return
         if (!canMove) {
           return;
         }
 
-        // 主要是用来防止无意间的上下滑动
+        // 如果是水平滑动。
         e.preventDefault();
 
-        // Not follow
+        // If follow is false, return
         if (!that.follow) {
           return;
         }
 
         const translate = startTranslateX + moveDistance;
 
-        // loop
+        // If loop is true
         if (that.loop) {
 
           // slide to right prev
           if (
             moveDistance > 0 &&
-            translate > -that.width
+            translate > 0   // slide outside of wrapper
           ) {
-            startTranslateX = -(that.width * (that.length + 1));
+            startTranslateX = -(that.width * that.length);
             return;
           }
 
           // slide to left next
           if (
             moveDistance < 0 &&
-            translate < -(that.width * that.length)
+            translate < -(that.width * (that.length + 1))
           ) {
-            startTranslateX = 0;
+            startTranslateX = -that.width;
+            return;
           }
         }
 
-        // 无弹性 无循环
+        // If loop and flexible all are false, return
         if (
           (!that.loop && !that.flexible) &&
           (translate >= -that.width || translate <= -((that.length - 1) * that.width))  // touch the boundary of left prev
@@ -275,7 +301,7 @@ export default {
           return;
         }
 
-        that.setTranslate(translate);
+        that.doTranslate(translate);
       }
 
       function endHandle(e) {
@@ -389,9 +415,15 @@ export default {
 
     },
 
-    // doTranslate(trans) {
-    //   this.setTranslate(trans);
-    // },
+    /**
+    * It be called by touchmoveHandle
+    */
+
+    doTranslate(trans) {
+      // if ()
+
+      this.setTranslate(trans);
+    },
 
     /**
     *  惰性函数，设置 dom 的 translate 值
@@ -427,8 +459,52 @@ export default {
     changePage(index) {
       this.insideValue = index;
       this.duration();
+
+      const towards = this.changePageTowards();
+      const signOfBoundary = this.atBoundary;
+
+      console.log(towards, this.translate, this.insideValue);
+
+      if (towards === 'prev' && this.translate === -this.width) {
+        this.translate = 0;
+        this.setTranslate(this.translate);
+        return;
+      }
+
+      if (towards === 'next' && this.translate === -(this.width * this.length)) {
+        this.translate = -(this.width * (this.length + 1));
+        this.setTranslate(this.translate);
+        return;
+      }
+
       this.translate = this.calcTrans();
       this.setTranslate(this.translate);
+    },
+
+    changePageTowards() {
+      if (
+        this.translate === -this.width &&
+        this.insideValue === this.length - 1
+      ) {
+        return 'prev';    // and at the boundary
+      }
+
+      if (
+        this.translate === -(this.width * this.length) &&
+        this.insideValue === 0
+      ) {
+        return 'next';  // and at the boundary
+      }
+
+      if (this.translate > -(this.width * (this.insideValue + 1))) {
+        return 'next';
+      }
+
+      if (this.translate < -(this.width * (this.insideValue + 1))) {
+        return 'prev';
+      }
+
+      return 'no';
     },
 
     /**
@@ -468,7 +544,7 @@ export default {
 };
 </script>
 
-<style lang="css">
+<style lang="postcss">
   .c-swipe{
     overflow: hidden;
   }
