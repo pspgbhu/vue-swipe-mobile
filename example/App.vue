@@ -1,9 +1,8 @@
 <template lang="html">
   <div class="">
-    <swipe class="slide" :infinity="false">
+    <swipe class="slide" :infinity="true" v-model="index">
       <swipe-item v-for="i in item" :class="`item${i}`" style="">item{{ i }}</swipe-item>
     </swipe>
-    <button id="button" type="button" name="button">button</button>
   </div>
 </template>
 
@@ -12,14 +11,11 @@ export default {
   data() {
     return {
       index: 1,
-      item: 2,
+      item: 4,
     };
   },
 
   mounted() {
-    document.getElementById('button').onclick = () => {
-      this.index = this.index === 1 ? 0 : this.index + 1;
-    };
   },
 };
 </script>
@@ -48,6 +44,10 @@ export default {
   .item3{
     height: 200px;
     background: #33f
+  }
+  .item4{
+    height: 200px;
+    background: #4ff
   }
   .slide .c-slide-pagination-item.active{
     background-color: #fff;
