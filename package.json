@@ -23,11 +23,8 @@
     "version": "npm run build && git add -A dist",
     "postversion": "npm run publish && git push --follow-tags"
   },
-  "dependencies": {
-    "c-swipe": "^1.1.3",
-    "chai": "^3.5.0",
-    "istanbul": "^0.4.5",
-    "vue": "^2.1.0"
+  "peerDependencies": {
+    "vue": "2.x"
   },
   "devDependencies": {
     "autoprefixer": "^6.4.0",
