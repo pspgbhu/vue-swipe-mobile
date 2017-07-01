@@ -26,8 +26,10 @@ export default {
       touchstartTime: 0,
       translate: 0,
       insideValue: this.value,
+      lastInsideValue: this.value,
       interval: null,
       transitionTimeout: null,
+      moveTowards: null,
     };
   },
 
@@ -117,6 +119,23 @@ export default {
       }
 
       return 0;
+    },
+
+    towards() {
+      if (this.lastInsideValue === this.length - 1 && this.insideValue === 0) {
+        return 'next';
+
+      } else if (this.lastInsideValue === 0 && this.insideValue === this.length - 1) {
+        return 'prev';
+
+      } else if (this.insideValue - this.lastInsideValue === 0) {
+        return 'insitu';
+
+      } else if (this.lastInsideValue < this.insideValue) {
+        return 'next';
+      }
+
+      return 'prev';
     },
   },
 
@@ -309,6 +328,16 @@ export default {
         // reset all variables
         firstMove = true;
         canMove = true;
+        that.lastInsideValue = that.insideValue;
+
+        if (moveDistance !== 0) {
+          that.moveTowards = moveDistance > 0
+            ? 'prev'
+            : 'next';
+
+        } else {
+          that.moveTowards = null;
+        }
 
         // if need to auto change, recover interval
         if (this.time !== 0) {
@@ -317,7 +346,7 @@ export default {
 
         const touchEndTime = new Date().getTime();
 
-        // Dont less than 10px
+        // Dont change card while move less than 10px
         if (Math.abs(moveDistance) < 10) {
           that.changePage(that.insideValue);
           return;
@@ -328,12 +357,14 @@ export default {
           (touchEndTime - touchStartTime) > that.quickTouchTime &&
           Math.abs(moveDistance) < Math.abs(that.insideMinMoveDistance)
         ) {
-
           that.changePage(that.insideValue);
           return;
         }
 
+
         // normal slide
+
+
         // succeed in sliding to right prev
         if (
           moveDistance > 0 &&
@@ -420,8 +451,6 @@ export default {
     */
 
     doTranslate(trans) {
-      // if ()
-
       this.setTranslate(trans);
     },
 
@@ -456,56 +485,138 @@ export default {
     *  切换页面
     */
 
+    // changePage(index) {
+    //   this.insideValue = index;
+    //   this.duration();
+
+    //   const towards = this.changePageTowards();
+    //   const signOfBoundary = this.atBoundary;
+
+    //   console.log(towards, this.translate, this.insideValue);
+
+    //   // At the left boundary, and move to left.
+    //   if (towards === 'prev' && this.translate === -this.width) {
+    //     console.log(1);
+    //     this.translate = 0;
+    //     this.setTranslate(this.translate);
+    //     return;
+    //   }
+
+    //   // At the outside of left boundary, and move in situ
+    //   if (towards === 'insitu' && this.translate === 0) {
+    //     console.log(2);
+    //     this.translate = 0;
+    //     this.setTranslate(this.translate);
+    //     return;
+    //   }
+
+    //   // At the right boundary, and move to right
+    //   if (towards === 'next' && this.translate === -(this.width * this.length)) {
+    //     console.log(3);
+    //     this.translate = -(this.width * (this.length + 1));
+    //     this.setTranslate(this.translate);
+    //     return;
+    //   }
+
+    //   // At the left boundary, and move in situ
+    //   if (towards === 'insitu' && this.translate === -(this.width * (this.length + 1))) {
+    //     console.log(4);
+    //     this.translate = -(this.width * (this.length + 1));
+    //     this.setTranslate(this.translate);
+    //     return;
+    //   }
+
+    //   this.translate = this.calcTrans();
+    //   this.setTranslate(this.translate);
+    // },
+
     changePage(index) {
-      this.insideValue = index;
       this.duration();
+      this.insideValue = index;
 
-      const towards = this.changePageTowards();
-      const signOfBoundary = this.atBoundary;
+      console.log(this.towards, this.translate);
+      console.log(this.lastInsideValue, -(this.width * this.length));
 
-      console.log(towards, this.translate, this.insideValue);
+      // At the right boundary
+      if (this.lastInsideValue === this.length - 1) {
+        console.log('at the right boundary');
 
-      if (towards === 'prev' && this.translate === -this.width) {
-        this.translate = 0;
+        if (this.towards === 'next') {
+          this.translate = -(this.width * (this.length + 1));
+        }
+
         this.setTranslate(this.translate);
         return;
       }
 
-      if (towards === 'next' && this.translate === -(this.width * this.length)) {
-        this.translate = -(this.width * (this.length + 1));
+      // At the right of right boundary
+      if (this.lastInsideValue === 0) {
+        console.log('at the right of right');
+
+        if (this.towards === 'prev') {
+          this.translate = -(this.width * this.length);
+        }
+
+        if (this.towards === 'next') {
+          this.translate = -(this.width * 2);
+        }
+
+        if (this.towards === 'insitu' && this.moveTowards === 'prev') {
+          this.translate = -(this.width * (this.length + 1));
+
+        } else if (this.towards === 'insitu' && this.moveTowards === 'next') {
+          this.translate = -(this.width);
+        }
+
         this.setTranslate(this.translate);
         return;
       }
 
-      this.translate = this.calcTrans();
+
+      this.translate = -(this.width * (this.insideValue + 1));
       this.setTranslate(this.translate);
+      console.log();
     },
 
-    changePageTowards() {
-      if (
-        this.translate === -this.width &&
-        this.insideValue === this.length - 1
-      ) {
-        return 'prev';    // and at the boundary
-      }
+    // changePageTowards() {
+    //   if (
+    //     this.translate === -this.width &&
+    //     this.insideValue === this.length - 1
+    //   ) {
+    //     return 'prev';    // and at the left boundary
+    //   }
 
-      if (
-        this.translate === -(this.width * this.length) &&
-        this.insideValue === 0
-      ) {
-        return 'next';  // and at the boundary
-      }
+    //   if (
+    //     this.translate === -(this.width * this.length) &&
+    //     this.insideValue === 0
+    //   ) {
+    //     return 'next';  // and at the right boundary
+    //   }
 
-      if (this.translate > -(this.width * (this.insideValue + 1))) {
-        return 'next';
-      }
+    //   if (
+    //     this.translate === 0 &&lastInsideValue
+    //     this.insideValue === this.length - 1
+    //   ) {
+    //     return 'insitu';  // At the outside of left boundary
+    //   }
 
-      if (this.translate < -(this.width * (this.insideValue + 1))) {
-        return 'prev';
-      }
+    //   if (
+    //     this.translate === -(this.width * (this.length + 1)) &&
+    //     this.insideValue === 0
+    //   ) {
+    //     return 'insitu';  // At the outside of left boundary
+    //   }
 
-      return 'no';
-    },
+    //   if (this.translate > -(this.width * (this.insideValue + 1))) {
+    //     return 'next';
+    //   }
+
+    //   if (this.translate < -(this.width * (this.insideValue + 1))) {
+    //     return 'prev';
+    //   }
+
+    //   return 'insitu';
+    // },
 
     /**
     *  添加和删除过渡效果
@@ -531,6 +642,8 @@ export default {
       }
 
       this.interval = setInterval(() => {
+        this.moveTowards = null;
+        this.lastInsideValue = this.insideValue;
         this.insideValue = this.insideValue === this.length - 1
           ? 0
           : this.insideValue + 1;
