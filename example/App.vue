@@ -1,9 +1,9 @@
 <template lang="html">
   <div class="">
     <swipe class="slide" v-model="index">
-      <swipe-item v-for="i in item" :class="`item${i}`" style="">item{{ i }}</swipe-item>
+      <swipe-item v-for="i in item" :class="`item${i}`" style="">number{{ number + i }}</swipe-item>
     </swipe>
-    <button id="button" type="button" name="button">button</button>
+    <button @click="handleClick">Click Me!</button>
   </div>
 </template>
 
@@ -13,13 +13,17 @@ export default {
     return {
       index: 1,
       item: 5,
+      number: 0,
     };
   },
 
   mounted() {
-    document.getElementById('button').onclick = () => {
-      this.index = this.index === 1 ? 0 : this.index + 1;
-    };
+  },
+
+  methods: {
+    handleClick() {
+      this.number += 1;
+    },
   },
 };
 </script>
