@@ -1,5 +1,5 @@
 <template>
-  <div class="c-swipe" ref="container">
+  <div class="c-swipe">
     <div
       class="c-swipe-wrapper"
       ref="wrapper"
@@ -37,6 +37,7 @@ export default {
 
   data() {
     return {
+      hasMounted: false,
       insideValue: this.value,
       pages: [],  // cards dom list
       width: 0,
@@ -45,6 +46,9 @@ export default {
 
       startx: 0,
       moveDistance: 0,
+      touchStartTime: 0,
+
+      copyNum: 2,
     };
   },
 
@@ -134,22 +138,25 @@ export default {
     },
 
     value(val) {
-      console.log('value', val);
       this.insideValue = val;
     },
   },
 
   mounted() {
+    this.hasMounted = true;
     this.init();
+    this.initOnce();
   },
 
   methods: {
     init() {
+      if (!this.hasMounted) return;
       this.initDatas();   // 初始化部分 datas
+      this.$refs.wrapper.style.width = `${this.width}px`;
 
-      if (this.inited) return;  // 后面的都是只用初始化一次的部分
-      this.inited = true;
-      this.initOnce();
+      if (this.loop) {   // loop mode
+        this.initLoop();
+      }
     },
 
     initOnce() {
@@ -158,17 +165,63 @@ export default {
 
     initDatas() {
       const style = getComputedStyle(this.$el, false).width;
-
       this.width = parseInt(style, 10);
-      this.length = this.pages.length;
       this.pages = this.$slots.default
         .filter(vm => vm.elm.classList.contains('c-swipe-item'))
         .map(vm => vm.elm);
+      this.length = this.pages.length;
+    },
+
+    initLoop() {
+      this.clearCopies();
+      this.addCopies();
+    },
+
+    clearCopies() {
+      const children = this.$refs.wrapper.querySelectorAll('.c-swipe-item-copy');
+      [...children].forEach(el => {
+        this.$refs.wrapper.removeChild(el);
+      }, this);
+      this.$refs.wrapper.style.marginLeft = '0';
+    },
+
+    addCopies() {
+      const fronts = [];
+      const ends = [];
+      // copy 前两个和最后两个元素
+      this.pages.forEach((item, index) => {
+        if (index < 2) {
+          const copy = item.cloneNode(true);
+          copy.classList.add('c-swipe-item-copy');
+          fronts.push(copy);
+        }
+        if (index > this.pages.length - 3) {
+          const copy = item.cloneNode(true);
+          copy.classList.add('c-swipe-item-copy');
+          ends.push(copy);
+        }
+      }, this);
+
+      this.copyNum = ends.length;
+      // insert node
+      while (ends.length) {
+        const item = ends.pop();
+        const firstNode = this.$refs.wrapper.querySelector('.c-swipe-item');
+        this.$refs.wrapper.insertBefore(item, firstNode);
+      }
+
+      while (fronts.length) {
+        const item = fronts.shift();
+        this.$refs.wrapper.appendChild(item);
+      }
+
+      this.$refs.wrapper.style.marginLeft = `-${this.width * this.copyNum}px`;
     },
 
     handleTouchstart(e) {
       this.startx = e.touches[0].pageX;
-      this.$refs.container.addEventListener('touchmove', this.handleTouchmove, passive);
+      this.touchStartTime = new Date().getTime();
+      this.$el.addEventListener('touchmove', this.handleTouchmove, passive);
     },
 
     handleTouchmove(e) {
@@ -177,9 +230,13 @@ export default {
     },
 
     handleTouchend(e) {
-      this.$refs.container.removeEventListener('touchmove', this.handleTouchmove, passive);
+      const isQuick = new Date().getTime() - this.touchStartTime < this.quickTouchTime;
+      this.$el.removeEventListener('touchmove', this.handleTouchmove, passive);
       // 根据轮播图滑动的方向来改变 insideValue
-      this.updateInsideValue(this.cartChange(this.moveDistance));
+      this.updateInsideValue(this.cartChange(this.moveDistance, isQuick));
+
+      // reset some data
+      this.moveDistance = 0;
     },
 
     /**
@@ -192,7 +249,7 @@ export default {
         return;
       }
 
-      let newValue = this.insideValue + deviation;
+      const newValue = this.insideValue + deviation;
 
       if (newValue < 0) {
         this.insideValue = 0;
@@ -209,14 +266,37 @@ export default {
       this.insideValue = newValue;
     },
 
-    cartChange(moveDistance) {
+    cartChange(moveDistance, quick) {
       const absMove = Math.abs(moveDistance);
       const absMin = Math.abs(this.c_minMoveDistance);
+      // 策略组
+      const strategies = {
+        normal() {
+          if (absMove < absMin) return 0;
+          if (moveDistance > 0) return -1;
+          if (moveDistance < 0) return 1;
+          return 0;
+        },
+        quick() {
+          if (absMove < 10) return 0;
+          if (moveDistance > 0) return -1;
+          if (moveDistance < 0) return 1;
+          return 0;
+        },
+      };
 
-      if (absMove < absMin) return 0;
-      if (moveDistance > 0) return -1;
-      if (moveDistance < 0) return 1;
-      return 0;
+      let stgy = 'normal';
+      // 当前策略
+      switch (true) {
+        case (quick === true):
+          stgy = 'quick';
+          break;
+        default:
+          stgy = 'normal';
+          break;
+      }
+
+      return strategies[stgy].apply(this);
     },
 
     valueChangeHandler(value) {

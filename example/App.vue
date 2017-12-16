@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="">
-    <swipe class="slide" v-model="index">
+    <swipe class="slide" v-model="index" ref="swiper">
       <swipe-item v-for="i in item" :class="`item${i}`" style="">number{{ number + i }}</swipe-item>
     </swipe>
     <button @click="handleClick">Click Me!</button>
@@ -11,13 +11,23 @@
 export default {
   data() {
     return {
-      index: 1,
+      index: 0,
       item: 5,
       number: 0,
     };
   },
 
   mounted() {
+    // setTimeout(() => {
+    //   this.item = 5;
+    // }, 3000);
+
+    // setTimeout(() => {
+    //   this.item = 2;
+    //   this.$nextTick(() => {
+    //     this.$refs.swiper.init();
+    //   });
+    // }, 6000);
   },
 
   methods: {
