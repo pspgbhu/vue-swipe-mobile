@@ -1,5 +1,5 @@
 <template>
-  <div class="c-swipe">
+  <div class="c-swipe" ref="container">
     <div
       class="c-swipe-wrapper"
       ref="wrapper"
@@ -38,13 +38,12 @@ export default {
   data() {
     return {
       insideValue: this.value,
-      pages: [], // cards dom list
+      pages: [],  // cards dom list
       width: 0,
       length: 0,
       inited: false,
 
       startx: 0,
-      translatex: 0,
       moveDistance: 0,
     };
   },
@@ -92,14 +91,50 @@ export default {
     },
   },
 
+  computed: {
+    c_minMoveDistance(val) {
+      let value = val;
+      let mode = '';
+
+      if (/px$/.test(val)) {
+        mode = 'pixel';
+      } else if (/%$/.test(val)) {
+        mode = 'percent';
+      } else {
+        value = '20%';
+        mode = 'percent';
+      }
+
+      const stgy = {
+        pixel() {
+          const parsedValue = parseInt(value, 10);
+          return `${value}px`;
+        },
+        percent() {
+          const parsedValue = parseInt(value, 10) / 100;
+          return this.width * parsedValue;
+        },
+      };
+
+      return stgy[mode].apply(this);
+    },
+
+    // 滑动结束后 translatex 的值
+    c_translatex() {
+      return -this.width * this.insideValue;
+    },
+  },
+
   watch: {
     insideValue(val) {
       if (val !== this.value) {
         this.$emit('input', val);
+        this.valueChangeHandler(val);
       }
     },
 
     value(val) {
+      console.log('value', val);
       this.insideValue = val;
     },
   },
@@ -111,10 +146,14 @@ export default {
   methods: {
     init() {
       this.initDatas();   // 初始化部分 datas
-      this.initStyle();
 
-      if (this.inited) return;
+      if (this.inited) return;  // 后面的都是只用初始化一次的部分
       this.inited = true;
+      this.initOnce();
+    },
+
+    initOnce() {
+      this.setTranslate(this.c_translatex);
     },
 
     initDatas() {
@@ -127,22 +166,63 @@ export default {
         .map(vm => vm.elm);
     },
 
-    initStyle() {
-    },
-
     handleTouchstart(e) {
       this.startx = e.touches[0].pageX;
-      this.$refs.wrapper.addEventListener('touchmove', this.handleTouchmove, passive);
-    },
-
-    handleTouchend(e) {
-      this.translatex += this.moveDistance;
-      this.$refs.wrapper.removeEventListener('touchmove', this.handleTouchmove, passive);
+      this.$refs.container.addEventListener('touchmove', this.handleTouchmove, passive);
     },
 
     handleTouchmove(e) {
       this.moveDistance = e.touches[0].pageX - this.startx;
-      this.setTranslate(this.translatex + this.moveDistance);
+      this.setTranslate(this.c_translatex + this.moveDistance);
+    },
+
+    handleTouchend(e) {
+      this.$refs.container.removeEventListener('touchmove', this.handleTouchmove, passive);
+      // 根据轮播图滑动的方向来改变 insideValue
+      this.updateInsideValue(this.cartChange(this.moveDistance));
+    },
+
+    /**
+    *  @param  {number} deviation value 改变的差值
+    */
+    updateInsideValue(deviation) {
+      // 因为滑动后如果没有翻页成功，是无法改变 insideValue 的值的，所以需要手动触发 handler
+      if (deviation === 0) {
+        this.valueChangeHandler(deviation);
+        return;
+      }
+
+      let newValue = this.insideValue + deviation;
+
+      if (newValue < 0) {
+        this.insideValue = 0;
+        this.valueChangeHandler(0);
+        return;
+      }
+
+      if (newValue > this.length - 1) {
+        this.insideValue = this.length - 1;
+        this.valueChangeHandler(this.length - 1);
+        return;
+      }
+
+      this.insideValue = newValue;
+    },
+
+    cartChange(moveDistance) {
+      const absMove = Math.abs(moveDistance);
+      const absMin = Math.abs(this.c_minMoveDistance);
+
+      if (absMove < absMin) return 0;
+      if (moveDistance > 0) return -1;
+      if (moveDistance < 0) return 1;
+      return 0;
+    },
+
+    valueChangeHandler(value) {
+      // 添加过渡效果
+      this.duration();
+      this.setTranslate(this.c_translatex);
     },
 
     /**
@@ -166,6 +246,24 @@ export default {
         this.$refs.wrapper.style.webkitTransform = `translate3d(${d}px, 0, 0)`;
         this.$refs.wrapper.style.webkitTransform = `webkitTranslate3d(${d}px, 0, 0)`;
       }
+    },
+
+    /**
+     *  添加和删除过渡效果
+     *  @param  {Array} args 需要添加过渡动画的元素数组
+     */
+    duration() {
+      const el = this.$refs.wrapper;
+      const speed = this.speed;
+      el.style.transitionDuration = `${speed}ms`;
+      el.style.webkitTransitionDuration = `${speed}ms`;
+
+      // 添加过渡效果
+      clearTimeout(this.durationTimer);
+      this.durationTimer = setTimeout(() => {
+        el.style.transitionDuration = '';
+        el.style.webkitTransitionDuration = '';
+      }, speed);
     },
   },
 };
