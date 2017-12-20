@@ -61,7 +61,7 @@ export default {
       type: Boolean,
       default: true,
     },
-    time: {       // 自动轮播时间间隔
+    autoplayTime: {       // 自动轮播时间间隔
       type: Number,
       default: 0,
     },
@@ -127,18 +127,30 @@ export default {
     c_translatex() {
       return -this.width * this.insideValue;
     },
+
+    c_isEnd() {
+      return this.insideValue === this.length - 1;
+    },
+
+    c_isBegin() {
+      return this.insideValue === 0;
+    },
   },
 
   watch: {
     insideValue(val) {
       if (val !== this.value) {
         this.$emit('input', val);
-        this.valueChangeHandler(val);
       }
+      this.valueChangeHandler(val);
     },
 
     value(val) {
       this.insideValue = val;
+    },
+
+    autoplayTime() {
+      this.autoChange();
     },
   },
 
@@ -151,11 +163,16 @@ export default {
   methods: {
     init() {
       if (!this.hasMounted) return;
+
       this.initDatas();   // 初始化部分 datas
       this.$refs.wrapper.style.width = `${this.width}px`;
 
       if (this.loop) {   // loop mode
         this.initLoop();
+      }
+
+      if (this.autoplayTime > 0) {
+        this.autoChange();
       }
     },
 
@@ -303,6 +320,32 @@ export default {
       // 添加过渡效果
       this.duration();
       this.setTranslate(this.c_translatex);
+    },
+
+    autoChange() {
+      if (typeof this.autoplayTime !== 'number' && this.autoplayTime > 0) return;
+      const timer = () => {
+        setTimeout(() => {
+          this.autoChangeHandler();
+          timer();
+        }, this.autoplayTime);
+      };
+      timer();
+    },
+
+    autoChangeHandler() {
+      // 如果是右边界，则先移动到左边被 copy 的相同的元素
+      if (this.c_isEnd) {
+        console.log('right boundary');
+        this.setTranslate(this.width);
+      }
+
+      // 如果不延迟 40 ms 的话，在 setTranslate 的时候，就会触发 transition 效果，这是不想要的。
+      setTimeout(() => {
+        this.insideValue = this.insideValue < this.length - 1
+          ? this.insideValue + 1
+          : 0;
+      }, 40);
     },
 
     /**

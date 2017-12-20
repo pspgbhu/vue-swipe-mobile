@@ -1,6 +1,11 @@
 <template lang="html">
   <div class="">
-    <swipe class="slide" v-model="index" ref="swiper">
+    <swipe
+      class="slide"
+      :autoplayTime="5000"
+      v-model="index"
+      ref="swiper"
+    >
       <swipe-item v-for="i in item" :class="`item${i}`" style="">number{{ number + i }}</swipe-item>
     </swipe>
     <button @click="handleClick">Click Me!</button>
