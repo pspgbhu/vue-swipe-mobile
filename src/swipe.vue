@@ -239,7 +239,7 @@ export default {
     handleTouchstart(e) {
       this.startx = e.touches[0].pageX;
       this.touchStartTime = new Date().getTime();
-      this.resetAutoChangeTimer();  // 重置自动轮播的计时器
+      this.autoChange();  // 重置自动轮播的计时器
       this.$el.addEventListener('touchmove', this.handleTouchmove, passive);
     },
 
@@ -353,6 +353,7 @@ export default {
     // 自动轮播
     autoChange() {
       if (typeof this.autoplayTime !== 'number' && this.autoplayTime > 0) return;
+      clearTimeout(this.autoplayTimer);
       const timer = () => {
         this.autoplayTimer = setTimeout(() => {
           this.autoChangeHandler();
