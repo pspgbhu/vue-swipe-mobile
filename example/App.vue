@@ -3,6 +3,7 @@
     <swipe
       class="slide"
       v-model="index"
+      :autoplayTime="5000"
       :loop="false"
       ref="swiper"
     >
@@ -23,16 +24,10 @@ export default {
   },
 
   mounted() {
-    // setTimeout(() => {
-    //   this.item = 5;
-    // }, 3000);
-
-    // setTimeout(() => {
-    //   this.item = 2;
-    //   this.$nextTick(() => {
-    //     this.$refs.swiper.init();
-    //   });
-    // }, 6000);
+    // 改轮播组件也支持异步渲染
+    setTimeout(() => {
+      this.item = 10;
+    }, 4000);
   },
 
   methods: {
