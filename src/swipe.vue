@@ -49,6 +49,7 @@ export default {
       touchStartTime: 0,
 
       copyNum: 2,
+      autoplayTimer: null,
     };
   },
 
@@ -238,6 +239,7 @@ export default {
     handleTouchstart(e) {
       this.startx = e.touches[0].pageX;
       this.touchStartTime = new Date().getTime();
+      this.resetAutoChangeTimer();  // 重置自动轮播的计时器
       this.$el.addEventListener('touchmove', this.handleTouchmove, passive);
     },
 
@@ -348,15 +350,24 @@ export default {
       this.setTranslate(this.c_translatex);
     },
 
+    // 自动轮播
     autoChange() {
       if (typeof this.autoplayTime !== 'number' && this.autoplayTime > 0) return;
       const timer = () => {
-        setTimeout(() => {
+        this.autoplayTimer = setTimeout(() => {
           this.autoChangeHandler();
           timer();
         }, this.autoplayTime);
       };
       timer();
+    },
+
+    // 重置计时器
+    // 主要为了避免用户在操作轮播图时轮播图依旧在自动轮播
+    resetAutoChangeTimer() {
+      if (typeof this.autoplayTime !== 'number' && this.autoplayTime > 0) return;
+      clearTimeout(this.autoplayTimer);
+      this.autoChange();
     },
 
     autoChangeHandler() {
