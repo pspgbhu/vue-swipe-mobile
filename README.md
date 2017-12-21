@@ -29,7 +29,7 @@ require('c-swipe/dist/swipe.css');
 // import c-swipe files into main.js
 import { Swipe, SwipeItem } from 'c-swipe';
 
-// register components
+// global register components
 Vue.component('swipe', Swipe);
 Vue.component('swipe-item', SwipeItem);
 ```
@@ -60,15 +60,18 @@ new Vue({
 <script type="text/javascript" src="../node-modules/c-swipe/dist/swipe.js"></script>
 ```
 ```js
-const vueSwipe = swipe.Swipe;
-const vueSwipeItem = swipe.SwipeItem;
+var vueSwipe = swipe.Swipe;
+var vueSwipeItem = swipe.SwipeItem;
 
 new Vue({
   el: 'body',
+  // register components
   components: {
     'swipe': vueSwipe,
     'swipe-item': vueSwipeItem
   }
+  // ...
+  // ...
 });
 ```
 
@@ -81,11 +84,10 @@ new Vue({
 | v-model| Number | 0 |The value binding index of swipe-item |
 | pagination | Boolean | true |If need default pagination.|
 | loop | Boolean | true | loop move |
-| time | Number | 0 | ms, interval time of change card. The card will not auto change when this value is equal to 0
-|minMoveDistance | String | '20%' | If to pass a percent just like '20%', the minimum distance that trigger to change card is 20% of the card's width. Or to pass a number such as '80', the minimum distance that trigger to change page is 80px.
-| follow | Boolean | true | If moving follow the finger.
+| autoplayTime | Number | 0 | ms, interval time of change card. The card will not auto change when this value is equal to 0
 | speed | Number | 300 | ms, the spend time of change card.
-| flexible | Boolean | false | If the value is true, could to keep going slide at outside the boundary . It will not work while the value of loop is true.
+|minMoveDistance | String | '20%' | If to pass a percent just like '20%', the minimum distance that trigger to change card is 20% of the card's width. Or to pass a number such as '80', the minimum distance that trigger to change page is 80px.
+
 
 ## Preview
 To scan the lower pattern for preview.
