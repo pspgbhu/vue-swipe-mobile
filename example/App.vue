@@ -24,10 +24,10 @@ export default {
   },
 
   mounted() {
-    // 改轮播组件也支持异步渲染
+    // 该轮播组件也支持异步渲染
     setTimeout(() => {
       this.item = 10;
-    }, 4000);
+    }, 6000);
   },
 
   methods: {
@@ -51,25 +51,13 @@ export default {
     width: 100%;
     height: 200px;
   }
-  .item1{
+  .c-swipe-item:nth-child(odd) {
     height: 200px;
     background: #9f0
   }
-  .item2{
-    height: 200px;
-    background: #f6c
-  }
-  .item3{
+  .c-swipe-item:nth-child(even) {
     height: 200px;
     background: #33f
-  }
-  .item4{
-    height: 200px;
-    background: #c8e
-  }
-  .item5{
-    height: 200px;
-    background: #3ee
   }
   .slide .c-slide-pagination-item.active{
     background-color: #fff;
