@@ -61,7 +61,7 @@ export default {
       type: Boolean,
       default: true,
     },
-    autoplayTime: {       // 自动轮播时间间隔
+    autoplayTime: {   // 自动轮播时间间隔
       type: Number,
       default: 0,
     },
@@ -77,22 +77,22 @@ export default {
       type: Number,
       default: 150,
     },
-    follow: {   // 卡片是否跟随指尖移动而滑动
-      type: Boolean,
-      default: true,
-    },
-    free: {     // 自由滑动模式 NOT OPEN
-      type: Boolean,
-      default: false,
-    },
     speed: {    // 切换屏幕的速度
       type: Number,
       default: 300,
     },
-    flexible: {  // 卡片拉倒底部后是否能拉出底色
-      type: Boolean,
-      default: false,
-    },
+    // follow: {   // 卡片是否跟随指尖移动而滑动
+    //   type: Boolean,
+    //   default: true,
+    // },
+    // free: {     // 自由滑动模式 NOT OPEN
+    //   type: Boolean,
+    //   default: false,
+    // },
+    // flexible: {  // 卡片拉倒底部后是否能拉出底色
+    //   type: Boolean,
+    //   default: false,
+    // },
   },
 
   computed: {
@@ -162,15 +162,20 @@ export default {
 
   methods: {
     init() {
+      // 保证 Mounted 前不会重复调用 init 方法
       if (!this.hasMounted) return;
 
-      this.initDatas();   // 初始化部分 datas
+      // 设置部分 datas 的值
+      this.initDatas();
+
+      // 为 wrapper 定宽
       this.$refs.wrapper.style.width = `${this.width}px`;
 
-      if (this.loop) {   // loop mode
-        this.initLoop();
-      }
+      // 复制收尾 dom
+      this.clearCopies();
+      this.addCopies();
 
+      // 自动轮播
       if (this.autoplayTime > 0) {
         this.autoChange();
       }
@@ -187,11 +192,6 @@ export default {
         .filter(vm => vm.elm.classList.contains('c-swipe-item'))
         .map(vm => vm.elm);
       this.length = this.pages.length;
-    },
-
-    initLoop() {
-      this.clearCopies();
-      this.addCopies();
     },
 
     clearCopies() {
@@ -243,7 +243,13 @@ export default {
 
     handleTouchmove(e) {
       this.moveDistance = e.touches[0].pageX - this.startx;
-      this.setTranslate(this.c_translatex + this.moveDistance);
+      const translate = this.c_translatex + this.moveDistance;
+      // 正常触摸应该移动的距离
+      let finalTranslate = translate;
+      // 考虑 loop 的取值时
+      finalTranslate = this.handleTouchmove_loop(translate);
+
+      this.setTranslate(finalTranslate);
     },
 
     handleTouchend(e) {
@@ -256,6 +262,25 @@ export default {
       this.moveDistance = 0;
     },
 
+    // 考虑 this.loop 的取值对 translate 的影响
+    handleTouchmove_loop(translate) {
+      if (this.loop) {
+        return translate;
+      }
+      const leftBoundary = 0;
+      const rightBoundary = -this.width * (this.length - 1);
+      // 左边界
+      if (translate > leftBoundary) {
+        return leftBoundary;
+      }
+      // 右边界
+      if (translate < rightBoundary) {
+        return rightBoundary;
+      }
+      // normal
+      return translate;
+    },
+
     /**
     *  @param  {number} deviation value 改变的差值
     */
@@ -266,6 +291,7 @@ export default {
         return;
       }
 
+      // 新的 insidevalue 值应该是现在 insideValue 的值 和 改变的差值的和
       const newValue = this.insideValue + deviation;
 
       if (newValue < 0) {

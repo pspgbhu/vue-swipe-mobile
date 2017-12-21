@@ -2,8 +2,8 @@
   <div class="">
     <swipe
       class="slide"
-      :autoplayTime="5000"
       v-model="index"
+      :loop="false"
       ref="swiper"
     >
       <swipe-item v-for="i in item" :class="`item${i}`" style="">number{{ number + i }}</swipe-item>
