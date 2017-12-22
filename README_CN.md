@@ -10,6 +10,8 @@
 
 > 一个简单的移动端卡片滑动轮播组件，适用于Vue2.x
 
+**c-swipe 2.0 全新归来。重写了全部的代码，更靠谱的质量，更优秀的性能**
+
 # Install
 `npm install c-swipe --save`
 
