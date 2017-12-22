@@ -421,9 +421,9 @@ export default {
 
     // 自动轮播
     autoChange() {
-      if (typeof this.autoplayTime !== 'number' || this.autoplayTime <= 0) return;
       clearTimeout(this.autoplayTimer);
       const timer = () => {
+        if (typeof this.autoplayTime !== 'number' || this.autoplayTime <= 0) return;
         this.autoplayTimer = setTimeout(() => {
           this.autoChangeHandler();
           timer();
