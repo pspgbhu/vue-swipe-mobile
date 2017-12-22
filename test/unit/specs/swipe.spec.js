@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import Swipe from 'src/swipe';
-import SwipeItem from 'src/swipe-item';
+import Swipe from '../../../src/swipe';
+import SwipeItem from '../../../src/swipe-item';
 
 describe('swipe.vue', () => {
   const Ctor = Vue.extend();
