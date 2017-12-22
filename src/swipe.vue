@@ -1,11 +1,12 @@
 <template>
-  <div class="c-swipe">
+  <div class="c-swipe"
+    @touchstart="handleTouchstart"
+    @touchend="handleTouchend"
+    @touchcancel="handleTouchend"
+  >
     <div
       class="c-swipe-wrapper"
       ref="wrapper"
-      @touchstart="handleTouchstart"
-      @touchend="handleTouchend"
-      @touchcancel="handleTouchend"
     >
       <slot></slot>
     </div>
@@ -18,20 +19,6 @@
 </template>
 
 <script>
-// Test via a getter in the options object to see if the passive property is accessed
-let supportsPassive = false;
-try {
-  const opts = Object.defineProperty({}, 'passive', {
-    get() {
-      supportsPassive = true;
-    },
-  });
-  window.addEventListener('testPassive', null, opts);
-  window.removeEventListener('testPassive', null, opts);
-} catch (e) {}
-
-const passive = supportsPassive ? { passive: true } : false;
-
 export default {
   name: 'swipe',
 
@@ -246,7 +233,7 @@ export default {
       if (this.autoChange) {
         this.autoChange();  // 重置自动轮播的计时器
       }
-      this.$el.addEventListener('touchmove', this.handleTouchmove, passive);
+      this.$el.addEventListener('touchmove', this.handleTouchmove);
     },
 
     handleTouchmove(e) {
@@ -261,7 +248,7 @@ export default {
 
     handleTouchend(e) {
       const isQuick = new Date().getTime() - this.touchStartTime < this.quickTouchTime;
-      this.$el.removeEventListener('touchmove', this.handleTouchmove, passive);
+      this.$el.removeEventListener('touchmove', this.handleTouchmove);
 
       if (this.loop) {
         // 如果是 loop 的话，有很多地方需要特殊处理
