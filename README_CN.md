@@ -22,10 +22,8 @@
 ```js
 // main.js
 
-// 引入样式文件
-require('c-swipe/dist/swipe.css');
-
 // 引入 c-swipe 主文件
+import 'c-swipe/dist/swipe.css';
 import { Swipe, SwipeItem } from 'c-swipe';
 
 // 全局注册组件

@@ -23,10 +23,8 @@ register components:
 ```js
 // main.js
 
-// import css file
-require('c-swipe/dist/swipe.css');
-
 // import c-swipe files into main.js
+import 'c-swipe/dist/swipe.css';
 import { Swipe, SwipeItem } from 'c-swipe';
 
 // global register components
