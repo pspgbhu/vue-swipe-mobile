@@ -18,7 +18,7 @@
     "e": "cross-env NODE_ENV=example node build/build.js && ./bin/gh-pages",
     "lint": "eslint --ext .js,.vue src",
     "unit": "karma start test/unit/karma.conf.js --single-run",
-    "test": "npm run unit",
+    "test": "",
     "preversion": "npm run lint",
     "version": "npm run build && git add -A dist",
     "postversion": "npm publish && git push --follow-tags"
