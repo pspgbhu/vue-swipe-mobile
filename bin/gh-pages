@@ -1,14 +1,9 @@
 #!/bin/bash
 
-git checkout gh-pages
+cp -r dist ../Cswipe-pages/
 
-git checkout master dist
-
-git commit -m "update"
-
-git push
-
-git checkout master
+git --work-tree=../Cswipe-pages --git-dir=../Cswipe-pages/.git add -A
+git --work-tree=../Cswipe-pages --git-dir=../Cswipe-pages/.git commit -m "update pages"
+git --work-tree=../Cswipe-pages --git-dir=../Cswipe-pages/.git push
 
 git checkout dist
-

@@ -102,8 +102,13 @@ if (config.build.productionGzip) {
   )
 }
 
-delete webpackConfig.entry;
-webpackConfig.entry = {
-  'swipe': './src/main.js',
+
+console.log('NODE_ENV ===', process.env.NODE_ENV)
+if (process.env.NODE_ENV !== 'example') {
+  delete webpackConfig.entry;
+  webpackConfig.entry = {
+    'swipe': './src/main.js',
+  }
 }
+
 module.exports = webpackConfig

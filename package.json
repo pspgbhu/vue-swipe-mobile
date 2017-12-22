@@ -14,8 +14,8 @@
   },
   "scripts": {
     "dev": "node build/dev-server.js",
-    "build": "node build/build.js",
-    "e": "cross-env node build/build.js && ./bin/gh-pages",
+    "build": "cross-env NODE_ENV=production node build/build.js",
+    "e": "cross-env NODE_ENV=example node build/build.js && ./bin/gh-pages",
     "lint": "eslint --ext .js,.vue src",
     "unit": "karma start test/unit/karma.conf.js --single-run",
     "test": "npm run unit",
