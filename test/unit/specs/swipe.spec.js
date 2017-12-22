@@ -7,17 +7,22 @@ describe('swipe.vue', () => {
 
   const vm = new Ctor({
     template: `
-    <div class="">
-      <swipe style="width: 50px; height: 50px;" v-model="value">
-        <swipe-item v-for="i in item" style="">item{{ i }}</swipe-item>
-      </swipe>
-    </div>
-    `,
+      <div class="">
+        <swipe style="width: 50px; height: 50px;"
+          v-model="value"
+          :pagination="true"
+          :loop="true"
+          :autoplayTime="1000"
+        >
+          <swipe-item v-for="i in item" style="">item{{ i }}</swipe-item>
+        </swipe>
+      </div>
+      `,
 
     data() {
       return {
         value: 0,
-        item: [0, 1, 2],
+        item: 3,
       };
     },
 
