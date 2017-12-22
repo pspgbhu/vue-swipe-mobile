@@ -239,7 +239,9 @@ export default {
     handleTouchstart(e) {
       this.startx = e.touches[0].pageX;
       this.touchStartTime = new Date().getTime();
-      this.autoChange();  // 重置自动轮播的计时器
+      if (this.autoChange) {
+        this.autoChange();  // 重置自动轮播的计时器
+      }
       this.$el.addEventListener('touchmove', this.handleTouchmove, passive);
     },
 
@@ -250,15 +252,20 @@ export default {
       let finalTranslate = translate;
       // 考虑 loop 的取值时
       finalTranslate = this.handleTouchmove_loop(translate);
-
       this.setTranslate(finalTranslate);
     },
 
     handleTouchend(e) {
       const isQuick = new Date().getTime() - this.touchStartTime < this.quickTouchTime;
       this.$el.removeEventListener('touchmove', this.handleTouchmove, passive);
-      // 根据轮播图滑动的方向来改变 insideValue
-      this.updateInsideValue(this.cartChange(this.moveDistance, isQuick));
+
+      if (this.loop) {
+        // 如果是 loop 的话，有很多地方需要特殊处理
+        this.handleTouchend_loop(this.cartChange(this.moveDistance, isQuick));
+      } else {
+        // 根据轮播图滑动的方向来改变 insideValue
+        this.updateInsideValue(this.cartChange(this.moveDistance, isQuick));
+      }
 
       // reset some data
       this.moveDistance = 0;
@@ -283,9 +290,36 @@ export default {
       return translate;
     },
 
+    // 考虑 this.loop 的取值对 translate 的影响
+    handleTouchend_loop(deviation) {
+      if (!this.loop) return;
+      const newValue = this.insideValue + deviation;
+
+      // left boundary
+      if (this.insideValue === 0 && newValue < this.insideValue) {
+        this.setTranslate((-this.width * this.length) + this.moveDistance);
+        setTimeout(() => {
+          this.updateInsideValue(deviation);
+        }, 40);
+        return;
+      }
+
+      // right boundary
+      if (this.insideValue === this.length - 1 && newValue > this.insideValue) {
+        this.setTranslate(this.width + this.moveDistance);
+        setTimeout(() => {
+          this.updateInsideValue(deviation);
+        }, 40);
+        return;
+      }
+
+      this.updateInsideValue(deviation);
+    },
+
     /**
-    *  @param  {number} deviation value 改变的差值
-    */
+     *  根据传入的差值来正确的更新 insideValue
+     *  @param  {number} deviation value 改变的差值
+     */
     updateInsideValue(deviation) {
       // 因为滑动后如果没有翻页成功，是无法改变 insideValue 的值的，所以需要手动触发 handler
       if (deviation === 0) {
@@ -296,32 +330,67 @@ export default {
       // 新的 insidevalue 值应该是现在 insideValue 的值 和 改变的差值的和
       const newValue = this.insideValue + deviation;
 
+      // 按顺序查看是否满足处理数据的要求，如果不满足则交给下一个函数处理
+      const chain = this.chain(
+        // 是否是 loop
+        this.updateInsideValue_loop,
+        // 什么特殊的设置都没有
+        this.updateInsideValue_normal,
+        // 通过更新 insideValue 来触发 valueChangeHandler
+        newValue => { this.insideValue = newValue; },
+      );
+
+      chain(newValue);
+    },
+
+    // 当考虑到 loop 的情况时
+    updateInsideValue_loop(newValue) {
+      if (!this.loop) return false;
+      if (newValue < 0) {
+        this.insideValue = this.length - 1;
+        return 'done';
+      }
+      if (newValue > this.length - 1) {
+        this.insideValue = 0;
+        return 'done';
+      }
+      return false;
+    },
+
+    // 普通状态下， loop === false
+    updateInsideValue_normal(newValue) {
       if (newValue < 0) {
         this.insideValue = 0;
+        // 因为这时候 insideValue 的值其实没变，所以需要手动触发 valueChangeHandler
         this.valueChangeHandler(0);
-        return;
+        return 'done';
       }
 
       if (newValue > this.length - 1) {
         this.insideValue = this.length - 1;
+        // 因为这时候 insideValue 的值其实没变，所以需要手动触发 valueChangeHandler
         this.valueChangeHandler(this.length - 1);
-        return;
+        return 'done';
       }
 
-      this.insideValue = newValue;
+      return false;
     },
+
 
     cartChange(moveDistance, quick) {
       const absMove = Math.abs(moveDistance);
       const absMin = Math.abs(this.c_minMoveDistance);
+
       // 策略组
       const strategies = {
+        // 普通滑动
         normal() {
           if (absMove < absMin) return 0;
           if (moveDistance > 0) return -1;
           if (moveDistance < 0) return 1;
           return 0;
         },
+        // 快速滑动
         quick() {
           if (absMove < 10) return 0;
           if (moveDistance > 0) return -1;
@@ -352,7 +421,7 @@ export default {
 
     // 自动轮播
     autoChange() {
-      if (typeof this.autoplayTime !== 'number' && this.autoplayTime > 0) return;
+      if (typeof this.autoplayTime !== 'number' || this.autoplayTime <= 0) return;
       clearTimeout(this.autoplayTimer);
       const timer = () => {
         this.autoplayTimer = setTimeout(() => {
@@ -363,18 +432,9 @@ export default {
       timer();
     },
 
-    // 重置计时器
-    // 主要为了避免用户在操作轮播图时轮播图依旧在自动轮播
-    resetAutoChangeTimer() {
-      if (typeof this.autoplayTime !== 'number' && this.autoplayTime > 0) return;
-      clearTimeout(this.autoplayTimer);
-      this.autoChange();
-    },
-
     autoChangeHandler() {
       // 如果是右边界，则先移动到左边被 copy 的相同的元素
       if (this.c_isEnd) {
-        console.log('right boundary');
         this.setTranslate(this.width);
       }
 
@@ -425,6 +485,16 @@ export default {
         el.style.transitionDuration = '';
         el.style.webkitTransitionDuration = '';
       }, speed);
+    },
+
+    // 职责链，函数 return false 则终止传递
+    chain(...fns) {
+      return (...args) => {
+        for (let index = 0; index < fns.length; index += 1) {
+          const result = fns[index](...args);
+          if (result === 'done') break;
+        }
+      };
     },
   },
 };
