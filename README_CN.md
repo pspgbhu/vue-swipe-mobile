@@ -87,7 +87,7 @@ new Vue({
 
 用手机扫描下方二维码进行预览
 
-![c-swpie](https://pspgbhu.github.io/assets/img/c-swipe.png)
+![c-swpie](https://user-images.githubusercontent.com/18444796/34308069-54bd17ca-e786-11e7-90b4-4af2ef219c55.png)
 
 # License
 
