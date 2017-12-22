@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
   <div class="c-swipe-item">
     <slot></slot>
   </div>
@@ -8,7 +8,7 @@
 export default {
   name: 'swipe-item',
   mounted() {
-    this.$parent.$init();
+    this.$parent.init();
   },
 };
 </script>

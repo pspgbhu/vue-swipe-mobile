@@ -1,36 +1,55 @@
 <template>
   <div class="c-swipe">
-    <div class="c-swipe-warpper">
+    <div
+      class="c-swipe-wrapper"
+      ref="wrapper"
+      @touchstart="handleTouchstart"
+      @touchend="handleTouchend"
+      @touchcancel="handleTouchend"
+    >
       <slot></slot>
     </div>
     <div v-if="pagination" class="c-swipe-pagination">
       <div class="c-swipe-pagination-bar">
-        <i v-for="item in length" :class="['c-swipe-pagination-item', item - 1 === insideValue ? 'active': '']"></i>
+        <i v-for="item in length" :class="['c-swipe-pagination-item', item - 1 === insideValue ? 'active': '']" :key="item"></i>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+// Test via a getter in the options object to see if the passive property is accessed
+let supportsPassive = false;
+try {
+  const opts = Object.defineProperty({}, 'passive', {
+    get() {
+      supportsPassive = true;
+    },
+  });
+  window.addEventListener('testPassive', null, opts);
+  window.removeEventListener('testPassive', null, opts);
+} catch (e) {}
+
+const passive = supportsPassive ? { passive: true } : false;
+
 export default {
   name: 'swipe',
 
   data() {
     return {
-      ele: {}, // 缓存 dom
-      pages: [], // 缓存子元素 dom
+      hasMounted: false,
+      insideValue: this.value,
+      pages: [],  // cards dom list
       width: 0,
       length: 0,
-      distance: 0,
-      touchstartTime: 0,
-      minMoveDistance: 60, // 成功触发切换 item 的最小滑动距离，会在 mounted 后动态更新
-      insideValue: this.value,
-      changing: false,
-      auto: false, // 区分是自动滑动 还是手动滑动
-      forward: 'next',
-      moveForward: null,
-      changeForward: null,
-      interval: null,
+      inited: false,
+
+      startx: 0,
+      moveDistance: 0,
+      touchStartTime: 0,
+
+      copyNum: 2,
+      autoplayTimer: null,
     };
   },
 
@@ -39,431 +58,474 @@ export default {
       type: Number,
       default: 0,
     },
-    pagination: {
+    pagination: {   // 默认导航器
       type: Boolean,
       default: true,
     },
-    time: {
+    autoplayTime: {   // 自动轮播时间间隔
       type: Number,
       default: 0,
     },
-    infinity: {
+    loop: {   // 循环滑动
       type: Boolean,
       default: true,
     },
+    minMoveDistance: {  // 成功触发切换 item 的最小滑动距离
+      type: String,
+      default: '20%',
+    },
+    quickTouchTime: {  // 快速滑动时只要距离大于 10px 便可以触发滑动
+      type: Number,
+      default: 150,
+    },
+    speed: {    // 切换屏幕的速度
+      type: Number,
+      default: 300,
+    },
+    // follow: {   // 卡片是否跟随指尖移动而滑动
+    //   type: Boolean,
+    //   default: true,
+    // },
+    // free: {     // 自由滑动模式 NOT OPEN
+    //   type: Boolean,
+    //   default: false,
+    // },
+    // flexible: {  // 卡片拉倒底部后是否能拉出底色
+    //   type: Boolean,
+    //   default: false,
+    // },
   },
 
   computed: {
-    leftIndex() {
-      return this.insideValue === 0 ? this.length - 1 : this.insideValue - 1; // 左边卡片的索引
+    c_minMoveDistance(val) {
+      let value = val;
+      let mode = '';
+
+      if (/px$/.test(val)) {
+        mode = 'pixel';
+      } else if (/%$/.test(val)) {
+        mode = 'percent';
+      } else {
+        value = '20%';
+        mode = 'percent';
+      }
+
+      const stgy = {
+        pixel() {
+          const parsedValue = parseInt(value, 10);
+          return `${value}px`;
+        },
+        percent() {
+          const parsedValue = parseInt(value, 10) / 100;
+          return this.width * parsedValue;
+        },
+      };
+
+      return stgy[mode].apply(this);
     },
-    rightIndex() {
-      return this.insideValue === this.length - 1 ? 0 : this.insideValue + 1; // 右边卡片的索引
+
+    // 滑动结束后 translatex 的值
+    c_translatex() {
+      return -this.width * this.insideValue;
+    },
+
+    c_isEnd() {
+      return this.insideValue === this.length - 1;
+    },
+
+    c_isBegin() {
+      return this.insideValue === 0;
     },
   },
 
   watch: {
     insideValue(val) {
-      this.$emit('input', val);
+      if (val !== this.value) {
+        this.$emit('input', val);
+      }
+      this.valueChangeHandler(val);
     },
 
     value(val) {
-      if (val === this.insideValue) return;
+      this.insideValue = val;
+    },
 
-      if (val === 0 && this.insideValue === this.length - 1) {
-        this.changeForward = 'next';
-      } else if (val === this.length - 1 && this.insideValue === 0 && this.length > 2) {
-        this.changeForward = 'prev';
-      } else if (val > this.insideValue) {
-        this.changeForward = 'next';
-      } else if (val < this.insideValue) {
-        this.changeForward = 'prev';
-      }
-
-      this.changePage(val);
+    autoplayTime() {
+      this.autoChange();
     },
   },
 
+  mounted() {
+    this.hasMounted = true;
+    this.init();
+    this.initOnce();
+  },
+
   methods: {
-    $init() {
-      clearInterval(this.interval);
+    reset() {
+      this.init();
+    },
 
-      // 缓存 dom
-      this.ele = this.$el;
+    init() {
+      // 保证 Mounted 前不会重复调用 init 方法
+      if (!this.hasMounted) return;
 
-      // 缓存 pages
-      this.pages = this.$children.map(val => val.$el);
+      // 设置部分 datas 的值
+      this.initDatas();
 
-      // 缓存 page 的个数
-      this.length = this.pages.length;
+      // 为 wrapper 定宽
+      this.$refs.wrapper.style.width = `${this.width}px`;
 
-      // 缓存 wapper 的 width。
-      this.initWidth();
-
-      // 初始化 active 的 卡片
-      this.pages[this.insideValue].classList.add('active');
-
-      // 执行核心函数
-      this.core();
+      // 复制收尾 dom
+      this.clearCopies();
+      this.addCopies();
 
       // 自动轮播
-      this.autoChange(this.time);
+      if (this.autoplayTime > 0) {
+        this.autoChange();
+      }
     },
 
-    $clearAuto() {
-      clearInterval(this.interval);
+    initOnce() {
+      this.setTranslate(this.c_translatex);
     },
 
-    initWidth() {
-      const style = getComputedStyle(this.ele, false).width;
+    initDatas() {
+      const style = getComputedStyle(this.$el, false).width;
       this.width = parseInt(style, 10);
-
-      // 初始化 minMoveDistance 最小触发距离
-      this.minMoveDistance = this.width / 3 < 100
-      ? this.width / 3
-      : 100;
+      this.pages = this.$slots.default
+        .filter(vm => vm.elm.classList.contains('c-swipe-item'))
+        .map(vm => vm.elm);
+      this.length = this.pages.length;
     },
 
-    core() {
-      // TODO
-      // 1. 快速滑动
-      // 2. 上下滑动
-      const that = this;
-      let touchstartX = 0;
-      let touchstartY = 0;
-      let touchendTime = 0;
-      let isFirstMove = true; // flag
-      let canMove = true; // flag
-      let touching = false;
+    clearCopies() {
+      const children = this.$refs.wrapper.querySelectorAll('.c-swipe-item-copy');
+      [...children].forEach(el => {
+        this.$refs.wrapper.removeChild(el);
+      }, this);
+      this.$refs.wrapper.style.marginLeft = '0';
+    },
 
-      that.pages.forEach((val, index) => {
-        // 单张卡片私有属性
-        val.moveTranslate = 0;
-        val.dataset.index = index;
+    addCopies() {
+      const fronts = [];
+      const ends = [];
+      // copy 前两个和最后两个元素
+      this.pages.forEach((item, index) => {
+        if (index < 2) {
+          const copy = item.cloneNode(true);
+          copy.classList.add('c-swipe-item-copy');
+          fronts.push(copy);
+        }
+        if (index > this.pages.length - 3) {
+          const copy = item.cloneNode(true);
+          copy.classList.add('c-swipe-item-copy');
+          ends.push(copy);
+        }
+      }, this);
 
-        val.addEventListener('touchstart', handleStart);
-        val.addEventListener('touchmove', handleMove);
-        val.addEventListener('touchend', handleEnd);
-        val.addEventListener('touchcancel', handleEnd);
-      });
-
-      function handleStart(e) {
-        if (that.changing) return;
-        if (touching) return;
-        touching = true;
-        that.auto = false;
-
-        // 初始化 flag
-        isFirstMove = true;
-
-        // 记录初始坐标
-        touchstartX = e.targetTouches[0].pageX;
-        touchstartY = e.targetTouches[0].pageY;
-
-        // 记录开始时间
-        that.touchstartTime = new Date().getTime();
-
-        // clearInterval
-        clearInterval(that.interval);
+      this.copyNum = ends.length;
+      // insert node
+      while (ends.length) {
+        const item = ends.pop();
+        const firstNode = this.$refs.wrapper.querySelector('.c-swipe-item');
+        this.$refs.wrapper.insertBefore(item, firstNode);
       }
 
-      function handleMove(e) {
-        if (that.changing) return;
-        if (!touching) return;
-        console.log(e);
-        // 计算 X 轴移动距离
-        that.distance = e.targetTouches[0].pageX - touchstartX;
-
-        // 判断是上下滑动还是左右滑动
-        if (isFirstMove) {
-
-          // 计算 Y 轴移动距离
-          const distanceY = e.targetTouches[0].pageY - touchstartY;
-
-          // 垂直滑动屏幕
-          if (Math.abs(that.distance) < Math.abs(distanceY)) {
-            canMove = false;
-          }
-          isFirstMove = false;
-        }
-
-        // 不能左右滑动，返回
-        if (!canMove) {
-          return;
-        }
-
-        // 不能上下滑动
-        e.preventDefault();
-
-        // 关闭无限滚动
-        if (!that.infinity) {
-          // 左极限s
-          if (this.dataset.index * 1 === 0 && that.distance > 0) {
-            return;
-
-            // 右极限
-          } else if (this.dataset.index * 1 === that.length - 1 && that.distance < 0) {
-            return;
-          }
-        }
-
-        // 开始滑动
-        that.move(this, that.distance);
+      while (fronts.length) {
+        const item = fronts.shift();
+        this.$refs.wrapper.appendChild(item);
       }
 
-      function handleEnd(e) {
-        if (!touching) return;
-        touching = false;
+      this.$refs.wrapper.style.marginLeft = `-${this.width * this.copyNum}px`;
+    },
 
-        // 禁止左右滑动
-        if (!canMove) {
-          canMove = true;
-          return;
-        }
-        if (that.changing) return;
-
-        touchendTime = new Date().getTime();
-
-        // 快速滑动
-        if (touchendTime - that.touchstartTime > 100 && touchendTime - that.touchstartTime < 600) {
-
-          // 设置 changeForward
-          that.changeForward = that.distance > 0 ? 'prev' : 'next';
-
-          // prev
-          if (that.changeForward === 'prev') {
-
-            if (!that.infinity && that.insideValue === 0) {
-              // 关闭无限滚动
-              return;
-            }
-
-            that.changePage(that.leftIndex);
-          // next
-          } else if (that.changeForward === 'next') {
-
-            // 关闭无限滚动
-            if (!that.infinity && that.insideValue === that.length - 1) {
-              return;
-            }
-
-            // 正常滚动
-            that.changePage(that.rightIndex);
-          }
-
-        // 普通滑动
-        } else {
-
-          // 设置 changeForward
-          switch (true) {
-            case (that.distance > that.minMoveDistance):
-              that.changeForward = 'prev';
-              break;
-            case (that.distance < -that.minMoveDistance):
-              that.changeForward = 'next';
-              break;
-            default:
-              that.changeForward = 'stay';
-          }
-
-          // prev
-          if (that.changeForward === 'prev') {
-
-            // 关闭无限滚动
-            if (!that.infinity && that.insideValue === 0) {
-              return;
-            }
-
-            that.changePage(that.leftIndex);
-          // next
-          } else if (that.changeForward === 'next') {
-
-            // 关闭无限滚动
-            if (!that.infinity && that.insideValue === that.length - 1) {
-              return;
-            }
-
-            that.changePage(that.rightIndex);
-          // stay
-          } else {
-            that.changePage(that.insideValue);
-          }
-        }
-
-        // 全局distance 归 0;
-        that.distance = 0;
-        isFirstMove = true;
-        that.moveForward = null;
-
-        // setInterval
-        that.autoChange(that.time);
+    handleTouchstart(e) {
+      this.startx = e.touches[0].pageX;
+      this.touchStartTime = new Date().getTime();
+      if (this.autoChange) {
+        this.autoChange();  // 重置自动轮播的计时器
       }
+      this.$el.addEventListener('touchmove', this.handleTouchmove, passive);
+    },
+
+    handleTouchmove(e) {
+      this.moveDistance = e.touches[0].pageX - this.startx;
+      const translate = this.c_translatex + this.moveDistance;
+      // 正常触摸应该移动的距离
+      let finalTranslate = translate;
+      // 考虑 loop 的取值时
+      finalTranslate = this.handleTouchmove_loop(translate);
+      this.setTranslate(finalTranslate);
+    },
+
+    handleTouchend(e) {
+      const isQuick = new Date().getTime() - this.touchStartTime < this.quickTouchTime;
+      this.$el.removeEventListener('touchmove', this.handleTouchmove, passive);
+
+      if (this.loop) {
+        // 如果是 loop 的话，有很多地方需要特殊处理
+        this.handleTouchend_loop(this.cartChange(this.moveDistance, isQuick));
+      } else {
+        // 根据轮播图滑动的方向来改变 insideValue
+        this.updateInsideValue(this.cartChange(this.moveDistance, isQuick));
+      }
+
+      // reset some data
+      this.moveDistance = 0;
+    },
+
+    // 考虑 this.loop 的取值对 translate 的影响
+    handleTouchmove_loop(translate) {
+      if (this.loop) {
+        return translate;
+      }
+      const leftBoundary = 0;
+      const rightBoundary = -this.width * (this.length - 1);
+      // 左边界
+      if (translate > leftBoundary) {
+        return leftBoundary;
+      }
+      // 右边界
+      if (translate < rightBoundary) {
+        return rightBoundary;
+      }
+      // normal
+      return translate;
+    },
+
+    // 考虑 this.loop 的取值对 translate 的影响
+    handleTouchend_loop(deviation) {
+      if (!this.loop) return;
+      const newValue = this.insideValue + deviation;
+
+      // left boundary
+      if (this.insideValue === 0 && newValue < this.insideValue) {
+        this.setTranslate((-this.width * this.length) + this.moveDistance);
+        setTimeout(() => {
+          this.updateInsideValue(deviation);
+        }, 40);
+        return;
+      }
+
+      // right boundary
+      if (this.insideValue === this.length - 1 && newValue > this.insideValue) {
+        this.setTranslate(this.width + this.moveDistance);
+        setTimeout(() => {
+          this.updateInsideValue(deviation);
+        }, 40);
+        return;
+      }
+
+      this.updateInsideValue(deviation);
     },
 
     /**
-     *  切换页面
+     *  根据传入的差值来正确的更新 insideValue
+     *  @param  {number} deviation value 改变的差值
      */
-    changePage(index, forward = this.changeForward) {
-      const leftIndex = this.leftIndex;
-      const rightIndex = this.rightIndex;
+    updateInsideValue(deviation) {
+      // 因为滑动后如果没有翻页成功，是无法改变 insideValue 的值的，所以需要手动触发 handler
+      if (deviation === 0) {
+        this.valueChangeHandler(deviation);
+        return;
+      }
 
-      // 根据滚动方向不同，产生不同的行为
-      if (forward === 'next' || forward === 'prev') {
-        const trans = forward === 'next' ? -this.width : this.width;
-        // const trans = -this.width;
+      // 新的 insidevalue 值应该是现在 insideValue 的值 和 改变的差值的和
+      const newValue = this.insideValue + deviation;
 
-        // 添加过渡效果
-        this.duration([index, this.insideValue]);
+      // 按顺序查看是否满足处理数据的要求，如果不满足则交给下一个函数处理
+      const chain = this.chain(
+        // 是否是 loop
+        this.updateInsideValue_loop,
+        // 什么特殊的设置都没有
+        this.updateInsideValue_normal,
+        // 通过更新 insideValue 来触发 valueChangeHandler
+        newValue => { this.insideValue = newValue; },
+      );
 
-        // 执行动画
-        this.doTranslate(this.pages[index], 0);
-        this.doTranslate(this.pages[this.insideValue], trans);
+      chain(newValue);
+    },
 
-      } else if (forward === 'stay') {
+    // 当考虑到 loop 的情况时
+    updateInsideValue_loop(newValue) {
+      if (!this.loop) return false;
+      if (newValue < 0) {
+        this.insideValue = this.length - 1;
+        return 'done';
+      }
+      if (newValue > this.length - 1) {
+        this.insideValue = 0;
+        return 'done';
+      }
+      return false;
+    },
 
-        if (this.distance > 0) {
-          // 添加过渡效果
-          this.duration([index, leftIndex]);
+    // 普通状态下， loop === false
+    updateInsideValue_normal(newValue) {
+      if (newValue < 0) {
+        this.insideValue = 0;
+        // 因为这时候 insideValue 的值其实没变，所以需要手动触发 valueChangeHandler
+        this.valueChangeHandler(0);
+        return 'done';
+      }
 
-          // 执行动画
-          this.doTranslate(this.pages[index], 0);
-          this.doTranslate(this.pages[leftIndex], -this.width);
+      if (newValue > this.length - 1) {
+        this.insideValue = this.length - 1;
+        // 因为这时候 insideValue 的值其实没变，所以需要手动触发 valueChangeHandler
+        this.valueChangeHandler(this.length - 1);
+        return 'done';
+      }
 
-        } else if (this.distance < 0) {
-          // 添加过渡效果
-          this.duration([index, rightIndex]);
+      return false;
+    },
 
-          // 执行动画
-          this.doTranslate(this.pages[index], 0);
-          this.doTranslate(this.pages[rightIndex], this.width);
-        }
 
+    cartChange(moveDistance, quick) {
+      const absMove = Math.abs(moveDistance);
+      const absMin = Math.abs(this.c_minMoveDistance);
+
+      // 策略组
+      const strategies = {
+        // 普通滑动
+        normal() {
+          if (absMove < absMin) return 0;
+          if (moveDistance > 0) return -1;
+          if (moveDistance < 0) return 1;
+          return 0;
+        },
+        // 快速滑动
+        quick() {
+          if (absMove < 10) return 0;
+          if (moveDistance > 0) return -1;
+          if (moveDistance < 0) return 1;
+          return 0;
+        },
+      };
+
+      let stgy = 'normal';
+      // 当前策略
+      switch (true) {
+        case (quick === true):
+          stgy = 'quick';
+          break;
+        default:
+          stgy = 'normal';
+          break;
+      }
+
+      return strategies[stgy].apply(this);
+    },
+
+    valueChangeHandler(value) {
+      // 添加过渡效果
+      this.duration();
+      this.setTranslate(this.c_translatex);
+    },
+
+    // 自动轮播
+    autoChange() {
+      clearTimeout(this.autoplayTimer);
+      const timer = () => {
+        if (typeof this.autoplayTime !== 'number' || this.autoplayTime <= 0) return;
+        this.autoplayTimer = setTimeout(() => {
+          this.autoChangeHandler();
+          timer();
+        }, this.autoplayTime);
+      };
+      timer();
+    },
+
+    autoChangeHandler() {
+      // 如果是右边界，则先移动到左边被 copy 的相同的元素
+      if (this.c_isEnd) {
+        this.setTranslate(this.width);
+      }
+
+      // 如果不延迟 40 ms 的话，在 setTranslate 的时候，就会触发 transition 效果，这是不想要的。
+      setTimeout(() => {
+        this.insideValue = this.insideValue < this.length - 1
+          ? this.insideValue + 1
+          : 0;
+      }, 40);
+    },
+
+    /**
+    *  惰性函数，设置 dom 的 translate 值
+    *  @param  {dom}             el       进行变换的元素
+    *  @param  {number, string}  trans    进行变换的值
+    */
+    setTranslate(d) {
+      if ('transform' in document.documentElement.style) {
+        this.setTranslate = transform;
+        this.setTranslate(d);
       } else {
-
-        this.changing = false;
+        this.setTranslate = webkitTransform;
+        this.setTranslate(d);
       }
-
-      // 同步 vue 数据
-      if (this.insideValue !== index) {
-        this.pages[this.insideValue].classList.remove('active');
-        this.pages[index].classList.add('active');
-        this.insideValue = index;
+      function transform(d) {
+        this.$refs.wrapper.style.transform = `translate3d(${d}px, 0, 0)`;
+        this.$refs.wrapper.style.transform = `webkikTranslate3d(${d}px, 0, 0)`;
       }
-    },
-
-    move(el, dstce) {
-      //  当前卡片移动的距离
-      el.moveTranslate = dstce;
-
-      // 当前卡片移动
-      this.doTranslate(el, dstce);
-
-      // 关心隔壁的卡片的位移
-      const index = this.insideValue; // 当前卡片的索引
-      const leftIndex = this.leftIndex; // 左边卡片的索引
-      const rightIndex = this.rightIndex; // 右边卡片的索引
-      const prevTrans = dstce - this.width;
-      const nextTrans = this.width + dstce;
-
-      // 向右滑动 prev
-      if (dstce > 0) {
-        this.doTranslate(this.pages[leftIndex], prevTrans);
-
-        // 右边卡片露出后，切换为左边卡片露出，保证右边卡片在正确的位置停留
-        if (this.moveForward === 'next' && index < this.length) {
-          this.doTranslate(this.pages[rightIndex], this.width);
-        }
-        this.moveForward = 'prev';
+      function webkitTransform(el, d) {
+        this.$refs.wrapper.style.webkitTransform = `translate3d(${d}px, 0, 0)`;
+        this.$refs.wrapper.style.webkitTransform = `webkitTranslate3d(${d}px, 0, 0)`;
       }
-      // 向左滑动 next
-      if (dstce < 0) {
-        this.doTranslate(this.pages[rightIndex], nextTrans);
-        // 左边卡片露出后，切换为右边卡片露出，保证左边卡片在正确的位置停留
-        if (this.moveForward === 'prev') {
-
-          this.doTranslate(this.pages[leftIndex], -this.width);
-        }
-        this.moveForward = 'next';
-      }
-    },
-
-    doTranslate(el, trans) {
-      el.style.transform = `translate3d(${trans}px, 0, 0)`;
-      el.style.webkitTransform = `translate3d(${trans}px, 0, 0)`;
     },
 
     /**
      *  添加和删除过渡效果
      *  @param  {Array} args 需要添加过渡动画的元素数组
      */
-    duration(args) {
-      const time = this.auto ? 400 : 300;
-      this.changing = true;
+    duration() {
+      const el = this.$refs.wrapper;
+      const speed = this.speed;
+      el.style.transitionDuration = `${speed}ms`;
+      el.style.webkitTransitionDuration = `${speed}ms`;
+
       // 添加过渡效果
-      args.forEach(val => {
-        this.pages[val].style.transitionDuration = `${time}ms`;
-        this.pages[val].style.webkitTransitionDuration = `${time}ms`;
-
-        setTimeout(() => {
-          this.pages[val].style.transitionDuration = '';
-          this.pages[val].style.webkitTransitionDuration = '';
-          this.pages[val].style.transform = '';
-          this.pages[val].style.webkitTransform = '';
-        }, time);
-        setTimeout(() => {
-          this.changing = false;
-        }, time);
-      });
+      clearTimeout(this.durationTimer);
+      this.durationTimer = setTimeout(() => {
+        el.style.transitionDuration = '';
+        el.style.webkitTransitionDuration = '';
+      }, speed);
     },
 
-    autoChange(time) {
-      if (time === 0) return;
-
-      this.interval = setInterval(() => {
-        this.auto = true;
-        this.$emit('input', this.rightIndex);
-      }, time);
+    // 职责链，函数 return false 则终止传递
+    chain(...fns) {
+      return (...args) => {
+        for (let index = 0; index < fns.length; index += 1) {
+          const result = fns[index](...args);
+          if (result === 'done') break;
+        }
+      };
     },
-  },
-
-  beforeDestroy() {
-    clearInterval(this.time);
   },
 };
 </script>
 
-<style lang="css">
+<style lang="postcss">
   .c-swipe{
     overflow: hidden;
   }
 
-  .c-swipe-warpper{
+  .c-swipe-wrapper{
     height: 100%;
     display: flex;
-    position: relative;
+    flex-direction: row;
   }
 
   .c-swipe-item{
     width: 100%;
     height: 100%;
-    flex-shrink: 0;
-    transform: translate3d(100%, 0, 0);
-    position: absolute;
-
+    flex: none;
   }
-  .c-swipe-item.active{
-    transform: translate3d(0 ,0 ,0);
-  }
-
-  /*.c-swipe-item.active ~ .c-swipe-item{
-    transform: translate3d(100%, 0, 0);
-  }*/
 
   .c-swipe-pagination{
     position: relative;
     height: 0;
-
   }
+
   .c-swipe-pagination-bar{
     position: absolute;
     left: 0;

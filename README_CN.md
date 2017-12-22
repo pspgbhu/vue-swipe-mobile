@@ -20,17 +20,18 @@
 ```js
 // main.js
 
-// import css file
+// 引入样式文件
 require('c-swipe/dist/swipe.css');
 
-// import c-swipe files into main.js
+// 引入 c-swipe 主文件
 import { Swipe, SwipeItem } from 'c-swipe';
 
-// register components
+// 全局注册组件
 Vue.component('swipe', Swipe);
 Vue.component('swipe-item', SwipeItem);
 ```
-在 `.vue` 文件中使用:
+
+在 `.vue` 单文件组件中使用:
 
 ```html
 <swipe v-model="index" style="text-align: center; line-height: 80px; height: 100px;">
@@ -56,15 +57,18 @@ new Vue({
 <script type="text/javascript" src="../node-modules/c-swipe/dist/swipe.js"></script>
 ```
 ```js
-const vueSwipe = swipe.Swipe;
-const vueSwipeItem = swipe.SwipeItem;
+var vueSwipe = swipe.Swipe;
+var vueSwipeItem = swipe.SwipeItem;
 
 new Vue({
   el: 'body',
+  // 注册组件
   components: {
     'swipe': vueSwipe,
     'swipe-item': vueSwipeItem
-  }
+  },
+  // ...
+  // ...
 });
 ```
 
@@ -74,8 +78,10 @@ new Vue({
 | ------ | ---- | -------- | ----------- |
 | v-model| Number | 0 | 绑定了当前显示卡片的索引，该数据为双向绑定，可通过更改 v-model 的值直接更改当前显示卡片 |
 | pagination | Boolean | true | 是否需要默认样式的导航器 |
-| infinity | Boolean | true | 是否无限循环 |
-| time | Number | 0 | 单位 ms，自动切换卡片的时间间隔，值为 0 时不自动切换 |
+| loop | Boolean | true | 循环切换 |
+| autoplayTime | Number | 0 | 单位 ms，自动切换卡片的时间间隔，值为 0 时不自动切换 |
+| speed | Number | 300 | 单位 ms, 切换卡片时的过渡效果的播放时长
+| minMoveDistance | String | '20%' | 成功触发切换卡片事件的最小滑动距离，可以传入百分比，如 '20%'，或者传入具体像素距离，如 '80px'。
 
 # Preview
 

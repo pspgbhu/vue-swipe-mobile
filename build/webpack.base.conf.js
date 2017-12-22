@@ -100,10 +100,10 @@ module.exports = {
   vue: {
     loaders: utils.cssLoaders({ sourceMap: useCssSourceMap }),
     postcss: [
+      precss,
       require('autoprefixer')({
-        browsers: ['last 2 versions', 'Android > 4.0']
-      }),
-      require('precss')
+        browsers: ['last 2 versions','Android >= 4.0','iOS >= 6']
+      })
     ]
   }
 }

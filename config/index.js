@@ -7,7 +7,7 @@ module.exports = {
     index: path.resolve(__dirname, '../dist/index.html'),
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: '',
-    assetsPublicPath: '/pspgbhu.github.io/c-swipe/',
+    assetsPublicPath: '',
     // assetsPublicPath: '/D:/code/Vue2-C-Swipe-Mobile/dist',
     productionSourceMap: false,
     // Gzip off by default as many popular static hosts such as
