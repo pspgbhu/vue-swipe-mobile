@@ -135,15 +135,12 @@ export default {
     margin-top: 10px;
   }
   .c-swipe-item:nth-child(odd) {
-    height: 200px;
     background: #9f0
   }
   .c-swipe-item:nth-child(even) {
-    height: 200px;
     background: lightcoral;
   }
   .item4{
-    height: 200px;
     background: #4ff
   }
   .slide .c-slide-pagination-item.active{
