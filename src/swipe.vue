@@ -162,6 +162,10 @@ export default {
   },
 
   methods: {
+    reset() {
+      this.init();
+    },
+
     init() {
       // 保证 Mounted 前不会重复调用 init 方法
       if (!this.hasMounted) return;
