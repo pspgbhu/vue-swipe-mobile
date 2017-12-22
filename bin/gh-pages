@@ -7,3 +7,4 @@ git --work-tree=../Cswipe-pages --git-dir=../Cswipe-pages/.git commit -m "update
 git --work-tree=../Cswipe-pages --git-dir=../Cswipe-pages/.git push
 
 git checkout dist
+rm dist/main.*
