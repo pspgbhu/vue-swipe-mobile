@@ -93,7 +93,7 @@ new Vue({
 ## Preview
 To scan the lower pattern for preview.
 
-![c-swpie](https://user-images.githubusercontent.com/18444796/34308069-54bd17ca-e786-11e7-90b4-4af2ef219c55.png)
+![c-swpie](https://user-images.githubusercontent.com/18444796/34320073-15caac84-e82c-11e7-8520-0edd5384b69b.png)
 
 # License
 

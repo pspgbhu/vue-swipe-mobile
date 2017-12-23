@@ -14,10 +14,10 @@
 
 ![c-swipe](https://raw.githubusercontent.com/pspgbhu/pspgbhu.github.io/master/assets/img/cswipe-demo.gif)
 
-# Install
+# 安装
 `npm install c-swipe --save`
 
-# Usage
+# 使用
 
 注册组件
 
@@ -74,7 +74,7 @@ new Vue({
 });
 ```
 
-# Options
+# 配置
 
 | 选项 | 类型 | 默认  | 描述 |
 | ------ | ---- | -------- | ----------- |
@@ -85,11 +85,11 @@ new Vue({
 | speed | Number | 300 | 单位 ms, 切换卡片时的过渡效果的播放时长
 | minMoveDistance | String | '20%' | 成功触发切换卡片事件的最小滑动距离，可以传入百分比，如 '20%'，或者传入具体像素距离，如 '80px'。
 
-# Preview
+# 预览
 
 用手机扫描下方二维码进行预览
 
-![c-swpie](https://user-images.githubusercontent.com/18444796/34308069-54bd17ca-e786-11e7-90b4-4af2ef219c55.png)
+![c-swpie](https://user-images.githubusercontent.com/18444796/34320073-15caac84-e82c-11e7-8520-0edd5384b69b.png)
 
 # License
 
