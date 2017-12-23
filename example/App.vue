@@ -106,7 +106,7 @@ export default {
 
   methods: {
     decreaseHandler() {
-      this.itemAsync -= 1;
+      this.itemAsync = this.itemAsync > 1 ? this.itemAsync - 1 : 1;
       // 避免删除卡片后，镜头落在轮播图外
       this.index5 = this.index5 >= this.itemAsync ? this.itemAsync - 1 : this.index5;
       // 删除卡片后，需要在 $nextTick 下手动调用 组件下的 reset 方法
@@ -135,6 +135,9 @@ export default {
     margin-top: 10px;
   }
   .c-swipe-item:nth-child(odd) {
+    background: #9f0
+  }
+  .slide .c-swipe-item:nth-of-type(2) {
     background: #9f0
   }
   .c-swipe-item:nth-child(even) {
