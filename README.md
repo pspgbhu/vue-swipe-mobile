@@ -8,7 +8,10 @@
 > A swipe (touch slide) component for Vue2.x in mobile device.
 > Only support touch event now.
 
+![c-swipe](https://raw.githubusercontent.com/pspgbhu/pspgbhu.github.io/master/assets/img/cswipe-demo.gif)
+
 ---
+
 
 ## [中文文档](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/blob/master/README_CN.md)
 

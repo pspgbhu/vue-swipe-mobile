@@ -12,6 +12,8 @@
 
 **c-swipe 2.0 全新归来。重写了全部的代码，更靠谱的质量，更优秀的性能**
 
+![c-swipe](https://raw.githubusercontent.com/pspgbhu/pspgbhu.github.io/master/assets/img/cswipe-demo.gif)
+
 # Install
 `npm install c-swipe --save`
 
