@@ -1,6 +1,7 @@
 <template>
   <div class="c-swipe"
     @touchstart="handleTouchstart"
+    @touchmove="handleTouchmove"
     @touchend="handleTouchend"
     @touchcancel="handleTouchend"
   >
@@ -34,6 +35,10 @@ export default {
       startx: 0,
       moveDistance: 0,
       touchStartTime: 0,
+
+      starty: 0,
+      firstMove: true,
+      horizontalMove: true,
 
       copyNum: 2,
       autoplayTimer: null,
@@ -229,15 +234,31 @@ export default {
 
     handleTouchstart(e) {
       this.startx = e.touches[0].pageX;
+      this.starty = e.touches[0].pageY;
       this.touchStartTime = new Date().getTime();
       if (this.autoChange) {
         this.autoChange();  // 重置自动轮播的计时器
       }
-      this.$el.addEventListener('touchmove', this.handleTouchmove);
+      this.firstMove = true;
     },
 
     handleTouchmove(e) {
       this.moveDistance = e.touches[0].pageX - this.startx;
+
+      // 判断用户是横向滑动还是纵向滑动，以此来避免误滑
+      if (this.firstMove) {
+        this.firstMove = false;
+        const moveY = e.touches[0].pageY - this.starty;
+        this.horizontalMove = Math.abs(this.moveDistance) >= Math.abs(moveY);
+      }
+
+      if (!this.horizontalMove) {
+        return;
+      }
+
+      e.preventDefault();
+      // e.stopPropagation();
+
       const translate = this.c_translatex + this.moveDistance;
       // 正常触摸应该移动的距离
       let finalTranslate = translate;
@@ -247,8 +268,9 @@ export default {
     },
 
     handleTouchend(e) {
+      if (!this.horizontalMove) return;
+
       const isQuick = new Date().getTime() - this.touchStartTime < this.quickTouchTime;
-      this.$el.removeEventListener('touchmove', this.handleTouchmove);
 
       if (this.loop) {
         // 如果是 loop 的话，有很多地方需要特殊处理
@@ -469,6 +491,8 @@ export default {
       const speed = this.speed;
       el.style.transitionDuration = `${speed}ms`;
       el.style.webkitTransitionDuration = `${speed}ms`;
+      el.style.transitionTimingFunction = 'ease-out';
+      el.style.webkitTransitionTimingFunction = 'ease-out';
 
       // 添加过渡效果
       clearTimeout(this.durationTimer);
@@ -535,6 +559,7 @@ export default {
     margin: 0 3px;
     transition: all .1s;
   }
+
   .c-swipe-pagination-item.active{
     width: 20px;
     background-color: rgb(72,163,241);
