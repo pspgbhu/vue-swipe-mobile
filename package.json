@@ -9,6 +9,10 @@
     "swipe",
     "slider"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pspgbhu/Vue2-C-Swipe-Mobile"
+  },
   "bugs": {
     "url": "https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/issues"
   },
