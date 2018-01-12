@@ -137,9 +137,6 @@ export default {
   .c-swipe-item:nth-child(odd) {
     background: #9f0
   }
-  .slide .c-swipe-item:nth-of-type(2) {
-    background: #9f0
-  }
   .c-swipe-item:nth-child(even) {
     background: lightcoral;
   }
