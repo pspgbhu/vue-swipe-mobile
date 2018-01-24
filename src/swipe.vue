@@ -35,6 +35,7 @@ export default {
       startx: 0,
       moveDistance: 0,
       touchStartTime: 0,
+      moving: false,
 
       starty: 0,
       firstMove: true,
@@ -233,6 +234,7 @@ export default {
     },
 
     handleTouchstart(e) {
+      if (this.length <= 1 || this.moving) return;
       this.startx = e.touches[0].pageX;
       this.starty = e.touches[0].pageY;
       this.touchStartTime = new Date().getTime();
@@ -243,6 +245,7 @@ export default {
     },
 
     handleTouchmove(e) {
+      if (this.length <= 1 || this.moving) return;
       this.moveDistance = e.touches[0].pageX - this.startx;
 
       // 判断用户是横向滑动还是纵向滑动，以此来避免误滑
@@ -252,12 +255,12 @@ export default {
         this.horizontalMove = Math.abs(this.moveDistance) >= Math.abs(moveY);
       }
 
+      // 用户非水平滑动屏幕
       if (!this.horizontalMove) {
         return;
       }
 
       e.preventDefault();
-      // e.stopPropagation();
 
       const translate = this.c_translatex + this.moveDistance;
       // 正常触摸应该移动的距离
@@ -268,6 +271,7 @@ export default {
     },
 
     handleTouchend(e) {
+      if (this.length <= 1 || this.moving) return;
       if (!this.horizontalMove) return;
 
       const isQuick = new Date().getTime() - this.touchStartTime < this.quickTouchTime;
@@ -436,7 +440,10 @@ export default {
     autoChange() {
       clearTimeout(this.autoplayTimer);
       const timer = () => {
-        if (typeof this.autoplayTime !== 'number' || this.autoplayTime <= 0) return;
+        if (typeof this.autoplayTime !== 'number'
+          || this.autoplayTime <= 0
+          || this.length <= 1
+        ) return;
         this.autoplayTimer = setTimeout(() => {
           this.autoChangeHandler();
           timer();
@@ -487,6 +494,7 @@ export default {
      *  @param  {Array} args 需要添加过渡动画的元素数组
      */
     duration() {
+      this.moving = true;
       const el = this.$refs.wrapper;
       const speed = this.speed;
       el.style.transitionDuration = `${speed}ms`;
@@ -499,6 +507,7 @@ export default {
       this.durationTimer = setTimeout(() => {
         el.style.transitionDuration = '';
         el.style.webkitTransitionDuration = '';
+        this.moving = false;
       }, speed);
     },
 
