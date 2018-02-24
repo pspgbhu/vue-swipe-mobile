@@ -13,7 +13,7 @@
         :autoplayTime="4000"
         :speed="300"
       >
-        <swipe-item v-for="i in item1" :class="`item${i}`" :key="i" style="">number{{ i }}</swipe-item>
+        <swipe-item v-for="i in item1" :key="i" style="">number{{ i }}</swipe-item>
       </swipe>
 
       <h3>Loop 模式</h3>
@@ -22,7 +22,7 @@
         class="slide"
         v-model="indexLoop"
       >
-        <swipe-item v-for="i in item1" :class="`item${i}`" :key="i" style="">number{{ i }}</swipe-item>
+        <swipe-item v-for="i in item1" :key="i" style="">number{{ i }}</swipe-item>
       </swipe>
       <p>关闭 Loop</p>
       <swipe
@@ -30,7 +30,7 @@
         v-model="indexNoLoop"
         :loop="false"
       >
-        <swipe-item v-for="i in item1" :class="`item${i}`" :key="i" style="">number{{ i }}</swipe-item>
+        <swipe-item v-for="i in item1" :key="i" style="">number{{ i }}</swipe-item>
       </swipe>
 
       <h3>双向绑定数据</h3>
@@ -43,7 +43,7 @@
         class="slide"
         v-model="index3"
       >
-        <swipe-item v-for="i in itemCommon" :class="`item${i}`" :key="i" style="">number{{ i }}</swipe-item>
+        <swipe-item v-for="i in itemCommon" :key="i" style="">number{{ i }}</swipe-item>
       </swipe>
 
       <h3>动态改变配置属性</h3>
@@ -58,7 +58,7 @@
         :autoplayTime="autoplay"
         :pagination="pagination"
       >
-        <swipe-item v-for="i in item1" :class="`item${i}`" :key="i" style="">number{{ i }}</swipe-item>
+        <swipe-item v-for="i in item1" :key="i" style="">number{{ i }}</swipe-item>
       </swipe>
 
       <h3>异步添加轮播图</h3>
@@ -69,7 +69,11 @@
         v-model="index5"
         ref="swipeAsync"
       >
-        <swipe-item v-for="i in itemAsync" :class="`item${i}`" :key="i" style="">number{{ i }}</swipe-item>
+        <swipe-item
+          v-for="i in itemAsync"
+          :key="i"
+          class="blue"
+        >number{{ i }}</swipe-item>
       </swipe>
     </div>
   </div>
@@ -140,7 +144,7 @@ export default {
   .c-swipe-item:nth-child(even) {
     background: lightcoral;
   }
-  .item4{
+  .slide .blue {
     background: #4ff
   }
   .slide .c-slide-pagination-item.active{
