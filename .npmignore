@@ -5,3 +5,4 @@ config
 static
 example
 example_html
+bin
