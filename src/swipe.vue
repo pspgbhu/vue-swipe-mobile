@@ -187,8 +187,8 @@ export default {
       const style = getComputedStyle(this.$el, false).width;
       this.width = parseInt(style, 10);
       this.pages = this.$slots.default
-        .filter(vm => vm.elm.classList.contains('c-swipe-item'))
-        .map(vm => vm.elm);
+        .filter(vnode => vnode.tag && vnode.elm.classList.contains('c-swipe-item'))
+        .map(vnode => vnode.elm);
       this.length = this.pages.length;
     },
 
