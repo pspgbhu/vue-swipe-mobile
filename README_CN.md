@@ -36,10 +36,13 @@ Vue.component('swipe-item', SwipeItem);
 在 `.vue` 单文件组件中使用:
 
 ```html
-<swipe v-model="index" style="text-align: center; line-height: 80px; height: 100px;">
-  <swipe-item style="height: 100px;">item1</swipe-item>
-  <swipe-item style="height: 100px;">item2</swipe-item>
-  <swipe-item style="height: 100px;">item3</swipe-item>
+<swipe
+  v-model="index"
+  style="text-align: center; line-height: 80px; height: 100px; background: #42b983;"
+>
+  <swipe-item style="height: 100px; line-height: 100px">item1</swipe-item>
+  <swipe-item style="height: 100px; line-height: 100px">item2</swipe-item>
+  <swipe-item style="height: 100px; line-height: 100px">item3</swipe-item>
 </swipe>
 ```
 

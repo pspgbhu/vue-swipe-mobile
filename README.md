@@ -38,10 +38,13 @@ Vue.component('swipe-item', SwipeItem);
 Use in `.vue` files.
 
 ```html
-<swipe v-model="index" style="text-align: center; line-height: 80px; height: 100px;">
-  <swipe-item style="height: 100px;">item1</swipe-item>
-  <swipe-item style="height: 100px;">item2</swipe-item>
-  <swipe-item style="height: 100px;">item3</swipe-item>
+<swipe
+  v-model="index"
+  style="text-align: center; line-height: 80px; height: 100px; background: #42b983;"
+>
+  <swipe-item style="height: 100px; line-height: 100px">item1</swipe-item>
+  <swipe-item style="height: 100px; line-height: 100px">item2</swipe-item>
+  <swipe-item style="height: 100px; line-height: 100px">item3</swipe-item>
 </swipe>
 ```
 
@@ -77,7 +80,6 @@ new Vue({
 ```
 
 
-
 ## Options
 
 | Option | Type | Defalut  | Description |
@@ -85,9 +87,9 @@ new Vue({
 | v-model| Number | 0 |The value binding index of swipe-item |
 | pagination | Boolean | true |If need default pagination.|
 | loop | Boolean | true | loop move |
-| autoplayTime | Number | 0 | ms, interval time of change card. The card will not auto change when this value is equal to 0
+| autoplayTime | Number | 0 | ms. Interval time of change card. The card will not auto change when this value is equal to 0
 | speed | Number | 300 | ms, the spend time of change card.
-|minMoveDistance | String | '20%' | If to pass a percent just like '20%', the minimum distance that trigger to change card is 20% of the card's width. Or to pass a number such as '80', the minimum distance that trigger to change page is 80px.
+|minMoveDistance | String | '20%' | The minimum distance that trigger to change card. If to pass a percent just like '20%', the minimum distance is 20% of the card's width. Or to pass a number such as '80', the minimum distance that trigger to change page is 80px.
 
 
 ## Preview
