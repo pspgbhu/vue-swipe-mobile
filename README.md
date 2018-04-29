@@ -1,4 +1,4 @@
-# Vue2-C-Swipe Mobile
+# c-swipe
 
 [![npm package](https://img.shields.io/npm/v/c-swipe.svg?style=flat-square)](https://www.npmjs.org/package/c-swipe)
 [![NPM downloads](http://img.shields.io/npm/dm/c-swipe.svg?style=flat-square)](https://npmjs.org/package/c-swipe)
