@@ -154,6 +154,10 @@ export default {
     this.initOnce();
   },
 
+  destroyed() {
+    clearTimeout(this.autoplayTimer);
+  },
+
   methods: {
     reset() {
       this.init();
