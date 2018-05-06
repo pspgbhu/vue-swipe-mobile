@@ -1,9 +1,11 @@
 # c-swipe
 
-[![npm package](https://img.shields.io/npm/v/c-swipe.svg?style=flat-square)](https://www.npmjs.org/package/c-swipe)
-[![NPM downloads](http://img.shields.io/npm/dm/c-swipe.svg?style=flat-square)](https://npmjs.org/package/c-swipe)
-[![GitHub issues](https://img.shields.io/github/issues/pspgbhu/vue-swipe-mobile.svg)]()
-[![Travis](https://travis-ci.org/pspgbhu/vue-swipe-mobile.svg?branch=master)]()
+[![npm package](https://img.shields.io/npm/v/c-swipe.svg)](https://www.npmjs.org/package/c-swipe)
+[![NPM downloads](http://img.shields.io/npm/dm/c-swipe.svg)](https://npmjs.org/package/c-swipe)
+[![GitHub issues](https://img.shields.io/github/issues/pspgbhu/vue-swipe-mobile.svg)](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/issues)
+[![Travis](https://travis-ci.org/pspgbhu/vue-swipe-mobile.svg?branch=master)](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile)
+
+[![NPM](https://nodei.co/npm/c-swipe.png)](https://nodei.co/npm/c-swipe/)
 
 > A swipe (touch slide) component for Vue2.x in mobile device.
 > Only support touch event now.
