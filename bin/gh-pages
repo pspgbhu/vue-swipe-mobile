@@ -1,10 +1,12 @@
 #!/bin/bash
 
-cp -r dist ../Cswipe-pages/
+DIR_NAME="../Cswipe-pages/"
 
-git --work-tree=../Cswipe-pages --git-dir=../Cswipe-pages/.git add -A
-git --work-tree=../Cswipe-pages --git-dir=../Cswipe-pages/.git commit -m "update pages"
-git --work-tree=../Cswipe-pages --git-dir=../Cswipe-pages/.git push
+cp -r dist $DIR_NAME
+
+git --work-tree=$DIR_NAME --git-dir=$DIR_NAME/.git add -A
+git --work-tree=$DIR_NAME --git-dir=$DIR_NAME/.git commit -m "update pages"
+git --work-tree=$DIR_NAME --git-dir=$DIR_NAME/.git push
 
 git checkout dist
 rm dist/main.*
