@@ -96,6 +96,8 @@ export default {
 
       if (/px$/.test(val)) {
         mode = 'pixel';
+      } else if (/^\d+$/.test(val)) {
+        mode = 'pixel';
       } else if (/%$/.test(val)) {
         mode = 'percent';
       } else {

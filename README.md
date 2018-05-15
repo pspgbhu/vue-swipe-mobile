@@ -91,7 +91,7 @@ new Vue({
 | loop | Boolean | true | loop move |
 | autoplayTime | Number | 0 | ms. Interval time of change card. The card will not auto change when this value is equal to 0
 | speed | Number | 300 | ms, the spend time of change card.
-|minMoveDistance | String | '20%' | The minimum distance that trigger to change card. If to pass a percent just like '20%', the minimum distance is 20% of the card's width. Or to pass a number such as '80', the minimum distance that trigger to change page is 80px.
+|minMoveDistance | String | '20%' | Such as '20%', '80px'. The minimum distance that trigger to change card
 
 
 ## Preview
