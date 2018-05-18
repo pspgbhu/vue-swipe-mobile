@@ -14,7 +14,6 @@
 
 ---
 
-
 ## [中文文档](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/blob/master/README_CN.md)
 
 
@@ -93,9 +92,50 @@ new Vue({
 | speed | Number | 300 | ms, the spend time of change card.
 |minMoveDistance | String | '20%' | Such as '20%', '80px'. The minimum distance that trigger to change card
 
+## Methods
+
+- **swipe.reset()**
+
+The c-swipe internally recalculates the width of the Swipe and calculates the scroll distance based on the new width. This solves the problem that the c-swipe scroll distance is not correct after the container is resized.
+
+Example:
+```jsx
+<swipe ref="swipe">
+  <swipe-item>item1</swipe-item>
+  <swipe-item>item2</swipe-item>
+  <swipe-item>item3</swipe-item>
+</swipe>
+
+<script>
+  export default {
+    // ...
+    // ...
+
+    handleResize() {
+      this.$refs.swipe.reset();
+    }
+
+    mounted() {
+      // Avoid losing context
+      this.handleResize = this.handleResize.bind(this);
+
+      window.addEventListener('resize', this.handleResize);
+    },
+
+    destroyed() {
+      window.removeEventListener('resize', this.handleResize);
+    }
+
+    // ...
+    // ...
+  }
+</script>
+```
+
 
 ## Preview
-To scan the lower pattern for preview.
+
+Scan the QR code below to preview
 
 ![c-swpie](https://user-images.githubusercontent.com/18444796/36627765-96ab7978-1982-11e8-862d-354cee86f89b.png)
 

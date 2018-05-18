@@ -163,6 +163,7 @@ export default {
   methods: {
     reset() {
       this.init();
+      this.initOnce();
     },
 
     init() {
@@ -175,7 +176,7 @@ export default {
       // 为 wrapper 定宽
       this.$refs.wrapper.style.width = `${this.width}px`;
 
-      // 复制收尾 dom
+      // 复制首尾 dom
       this.clearCopies();
       this.addCopies();
 

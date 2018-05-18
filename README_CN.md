@@ -16,10 +16,14 @@
 
 ![c-swipe](https://raw.githubusercontent.com/pspgbhu/pspgbhu.github.io/master/assets/img/cswipe-demo.gif)
 
-# 安装
+---
+
+## [English Document](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/blob/master/README.md)
+
+## 安装
 `npm install c-swipe --save`
 
-# 使用
+## 使用
 
 注册组件
 
@@ -79,7 +83,7 @@ new Vue({
 });
 ```
 
-# 配置
+## 配置
 
 | 选项 | 类型 | 默认  | 描述 |
 | ------ | ---- | -------- | ----------- |
@@ -90,12 +94,52 @@ new Vue({
 | speed | Number | 300 | 单位 ms, 切换卡片时的过渡效果的播放时长
 | minMoveDistance | String | '20%' | 成功触发切换卡片事件的最小滑动距离，可以传入百分比，如 '20%'，或者传入具体像素距离，如 '80px'。
 
-# 预览
+## 方法
+
+- **swipe.reset()**
+
+c-swipe 内部将重新计算 Swipe 的宽度，并根据新的宽度来计算滚屏的距离。这个可以解决容器重置大小后 c-swipe 滚屏距离不正确的问题。
+
+例：
+```jsx
+<swipe ref="swipe">
+  <swipe-item>item1</swipe-item>
+  <swipe-item>item2</swipe-item>
+  <swipe-item>item3</swipe-item>
+</swipe>
+
+<script>
+  export default {
+    // ...
+    // ...
+
+    handleResize() {
+      this.$refs.swipe.reset();
+    }
+
+    mounted() {
+      // 避免上下文丢失
+      this.handleResize = this.handleResize.bind(this);
+
+      window.addEventListener('resize', this.handleResize);
+    },
+
+    destroyed() {
+      window.removeEventListener('resize', this.handleResize);
+    }
+
+    // ...
+    // ...
+  }
+</script>
+```
+
+## 预览
 
 用手机扫描下方二维码进行预览
 
 ![c-swpie](https://user-images.githubusercontent.com/18444796/36627765-96ab7978-1982-11e8-862d-354cee86f89b.png)
 
-# License
+## License
 
 MIT
