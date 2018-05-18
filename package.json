@@ -6,15 +6,18 @@
   "main": "dist/swipe.js",
   "keywords": [
     "vue",
+    "vue2",
+    "c-swipe",
     "swipe",
+    "swiper",
     "slider"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/pspgbhu/Vue2-C-Swipe-Mobile"
+    "url": "https://github.com/pspgbhu/vue-swipe-mobile"
   },
   "bugs": {
-    "url": "https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/issues"
+    "url": "https://github.com/pspgbhu/vue-swipe-mobile/issues"
   },
   "scripts": {
     "dev": "node build/dev-server.js",
@@ -92,5 +95,6 @@
   "engines": {
     "node": ">= 4.0.0",
     "npm": ">= 3.0.0"
-  }
+  },
+  "license": "MIT"
 }
