@@ -5,7 +5,7 @@ DIR_NAME="../Cswipe-pages/"
 cp -r dist $DIR_NAME
 
 git --work-tree=$DIR_NAME --git-dir=$DIR_NAME/.git add -A
-git --work-tree=$DIR_NAME --git-dir=$DIR_NAME/.git commit -m "update pages"
+git --work-tree=$DIR_NAME --git-dir=$DIR_NAME/.git commit -m "ghpages: update sources for gh-pages"
 git --work-tree=$DIR_NAME --git-dir=$DIR_NAME/.git push
 
 git checkout dist
