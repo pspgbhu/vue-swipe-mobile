@@ -475,8 +475,8 @@ export default {
 
     /**
     *  惰性函数，设置 dom 的 translate 值
-    *  @param  {dom}             el       进行变换的元素
-    *  @param  {number, string}  trans    进行变换的值
+    *  @param  {dom}            el       进行变换的元素
+    *  @param  {number|string}  trans    进行变换的值
     */
     setTranslate(d) {
       if ('transform' in document.documentElement.style) {
