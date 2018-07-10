@@ -16,9 +16,7 @@
 
 ![c-swipe](https://raw.githubusercontent.com/pspgbhu/pspgbhu.github.io/master/assets/img/cswipe-demo.gif)
 
----
-
-## [English Document](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/blob/master/README.md)
+[English Document](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/blob/master/README.md)
 
 ## 安装
 `npm install c-swipe --save`
@@ -139,6 +137,10 @@ c-swipe 内部将重新计算 Swipe 的宽度，并根据新的宽度来计算�
 用手机扫描下方二维码进行预览
 
 ![c-swpie](https://user-images.githubusercontent.com/18444796/36627765-96ab7978-1982-11e8-862d-354cee86f89b.png)
+
+## 反馈
+
+如果你在使用中有任何疑问，遇见任何问题，或是有任何好的建议，都欢迎通过 issue 来反馈给我，我也一定会在第一时间答疑解惑，解决问题。
 
 ## License
 

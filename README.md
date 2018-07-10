@@ -12,10 +12,7 @@
 
 ![c-swipe](https://raw.githubusercontent.com/pspgbhu/pspgbhu.github.io/master/assets/img/cswipe-demo.gif)
 
----
-
-## [中文文档](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/blob/master/README_CN.md)
-
+[中文文档](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/blob/master/README_CN.md)
 
 ## Install
 `npm install c-swipe --save`
@@ -139,6 +136,7 @@ Scan the QR code below to preview
 
 ![c-swpie](https://user-images.githubusercontent.com/18444796/36627765-96ab7978-1982-11e8-862d-354cee86f89b.png)
 
-# License
+
+## License
 
 MIT
