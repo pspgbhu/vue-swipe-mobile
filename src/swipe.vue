@@ -167,11 +167,17 @@ export default {
     },
 
     init() {
-      // 保证 Mounted 前不会重复调用 init 方法
+      // 如果组件 mounted 前 init 方法被调用，则会引起报错。
+      // 因此使用 hasMounted 变量来保证不会报错。
       if (!this.hasMounted) return;
 
       // 设置部分 datas 的值
-      this.initDatas();
+      const success = this.initDatas();
+
+      if (!success) {
+        // Failed to init datas
+        return;
+      }
 
       // 为 wrapper 定宽
       this.$refs.wrapper.style.width = `${this.width}px`;
@@ -193,10 +199,24 @@ export default {
     initDatas() {
       const style = getComputedStyle(this.$el, false).width;
       this.width = parseInt(style, 10);
+
+      if (!this.$slots.default) {
+        // console.warn('No child nodes in swipe component', this.$el);
+        return false;
+      }
+
       this.pages = this.$slots.default
         .filter(vnode => vnode.tag && vnode.elm.classList.contains('c-swipe-item'))
         .map(vnode => vnode.elm);
+
+      if (!this.pages.length) {
+        // console.warn('The swipe component not contained swipe-item component', this.$el);
+        return false;
+      }
+
       this.length = this.pages.length;
+
+      return true;
     },
 
     clearCopies() {
