@@ -111,24 +111,26 @@ c-swipe 内部将重新计算 Swipe 的宽度，并根据新的宽度来计算�
     // ...
     // ...
 
-    handleResize() {
-      this.$refs.swipe.reset();
-    }
-
     mounted() {
-      // 避免上下文丢失
+      // Avoid losing context
       this.handleResize = this.handleResize.bind(this);
-
       window.addEventListener('resize', this.handleResize);
     },
 
     destroyed() {
       window.removeEventListener('resize', this.handleResize);
-    }
+    },
+
+    methods: {
+      handleResize() {
+        this.$refs.swipe.reset();
+      },
+    },
 
     // ...
     // ...
   }
+
 </script>
 ```
 
