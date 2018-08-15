@@ -58,8 +58,8 @@ new Vue({
 
 *Or, you want import it by html tag*
 ```html
-<link href="../node-modules/c-swipe/dist/swipe.css" rel="stylesheet"></head>
-<script type="text/javascript" src="../node-modules/c-swipe/dist/swipe.js"></script>
+<link href="https://unpkg.com/c-swipe/dist/swipe.css" rel="stylesheet"></head>
+<script type="text/javascript" src="https://unpkg.com/c-swipe/dist/swipe.js"></script>
 ```
 ```js
 var vueSwipe = swipe.Swipe;

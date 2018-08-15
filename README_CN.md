@@ -62,8 +62,8 @@ new Vue({
 
 *或者，你想在 html 标签中直接引用*
 ```html
-<link href="../node-modules/c-swipe/dist/swipe.css" rel="stylesheet"></head>
-<script type="text/javascript" src="../node-modules/c-swipe/dist/swipe.js"></script>
+<link href="https://unpkg.com/c-swipe/dist/swipe.css" rel="stylesheet"></head>
+<script type="text/javascript" src="https://unpkg.com/c-swipe/dist/swipe.js"></script>
 ```
 ```js
 var vueSwipe = swipe.Swipe;
