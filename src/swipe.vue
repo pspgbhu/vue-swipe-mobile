@@ -90,15 +90,15 @@ export default {
   },
 
   computed: {
-    c_minMoveDistance(val) {
-      let value = val;
+    c_minMoveDistance() {
+      let value = this.minMoveDistance;
       let mode = '';
 
-      if (/px$/.test(val)) {
+      if (/px$/.test(value)) {
         mode = 'pixel';
-      } else if (/^\d+$/.test(val)) {
+      } else if (/^\d+$/.test(value)) {
         mode = 'pixel';
-      } else if (/%$/.test(val)) {
+      } else if (/%$/.test(value)) {
         mode = 'percent';
       } else {
         value = '20%';
