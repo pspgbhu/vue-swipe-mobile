@@ -1,10 +1,10 @@
 # c-swipe
 
 [![gzip](http://img.badgesize.io/https://unpkg.com/c-swipe/dist/swipe.js?compression=gzip&style=flat-square)](https://unpkg.com/c-swipe/dist/swipe.js)
-[![npm package](https://img.shields.io/npm/v/c-swipe.svg)](https://www.npmjs.org/package/c-swipe)
-[![NPM downloads](http://img.shields.io/npm/dm/c-swipe.svg)](https://npmjs.org/package/c-swipe)
-[![GitHub issues](https://img.shields.io/github/issues/pspgbhu/vue-swipe-mobile.svg)](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/issues)
-[![Travis](https://travis-ci.org/pspgbhu/vue-swipe-mobile.svg?branch=master)](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile)
+[![npm package](https://img.shields.io/npm/v/c-swipe.svg?style=flat-square)](https://www.npmjs.org/package/c-swipe)
+[![NPM downloads](http://img.shields.io/npm/dm/c-swipe.svg?style=flat-square)](https://npmjs.org/package/c-swipe)
+[![GitHub issues](https://img.shields.io/github/issues/pspgbhu/vue-swipe-mobile.svg?style=flat-square)](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/issues)
+[![Travis](https://img.shields.io/travis/pspgbhu/vue-swipe-mobile/master.svg?style=flat-square)](https://github.com/pspgbhu/vue-swipe-mobile)
 
 [![NPM](https://nodei.co/npm/c-swipe.png)](https://nodei.co/npm/c-swipe/)
 
