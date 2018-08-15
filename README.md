@@ -1,5 +1,6 @@
 # c-swipe
 
+[![gzip](http://img.badgesize.io/https://unpkg.com/c-swipe/dist/swipe.js?compression=gzip&style=flat-square)]
 [![npm package](https://img.shields.io/npm/v/c-swipe.svg)](https://www.npmjs.org/package/c-swipe)
 [![NPM downloads](http://img.shields.io/npm/dm/c-swipe.svg)](https://npmjs.org/package/c-swipe)
 [![GitHub issues](https://img.shields.io/github/issues/pspgbhu/vue-swipe-mobile.svg)](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/issues)

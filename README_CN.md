@@ -1,5 +1,6 @@
 # c-swipe
 
+[![gzip](http://img.badgesize.io/https://unpkg.com/c-swipe/dist/swipe.js?compression=gzip&style=flat-square)]
 [![npm package](https://img.shields.io/npm/v/c-swipe.svg)](https://www.npmjs.org/package/c-swipe)
 [![NPM downloads](http://img.shields.io/npm/dm/c-swipe.svg)](https://npmjs.org/package/c-swipe)
 [![GitHub issues](https://img.shields.io/github/issues/pspgbhu/vue-swipe-mobile.svg)](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/issues)
@@ -12,7 +13,7 @@
 
 > 一个简单的移动端卡片滑动轮播组件，适用于Vue2.x
 
-**c-swipe 2.0 全新归来。重写了全部的代码，更靠谱的质量，更优秀的性能**
+**c-swipe 2.0 全新归来。更靠谱的质量，更优秀的性能**
 
 ![c-swipe](https://raw.githubusercontent.com/pspgbhu/pspgbhu.github.io/master/assets/img/cswipe-demo.gif)
 
