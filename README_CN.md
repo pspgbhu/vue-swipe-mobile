@@ -1,3 +1,5 @@
+[English](./README.md) | 简体中文
+
 # c-swipe
 
 [![gzip](http://img.badgesize.io/https://unpkg.com/c-swipe/dist/swipe.js?compression=gzip&style=flat-square)](https://unpkg.com/c-swipe/dist/swipe.js)
@@ -7,9 +9,6 @@
 [![Travis](https://img.shields.io/travis/pspgbhu/vue-swipe-mobile/master.svg?style=flat-square)](https://github.com/pspgbhu/vue-swipe-mobile)
 
 [![NPM](https://nodei.co/npm/c-swipe.png)](https://nodei.co/npm/c-swipe/)
-
-> A swipe (touch slide) component for Vue2.x in mobile device.
-> Only support touch event now.
 
 > 一个简单的移动端卡片滑动轮播组件，适用于Vue2.x
 

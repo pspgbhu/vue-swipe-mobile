@@ -1,3 +1,5 @@
+English | [简体中文](./README_CN.md)
+
 # c-swipe
 
 [![gzip](http://img.badgesize.io/https://unpkg.com/c-swipe/dist/swipe.js?compression=gzip&style=flat-square)](https://unpkg.com/c-swipe/dist/swipe.js)
@@ -13,7 +15,6 @@
 
 ![c-swipe](https://raw.githubusercontent.com/pspgbhu/pspgbhu.github.io/master/assets/img/cswipe-demo.gif)
 
-[中文文档](https://github.com/pspgbhu/Vue2-C-Swipe-Mobile/blob/master/README_CN.md)
 
 ## Install
 `npm install c-swipe --save`
