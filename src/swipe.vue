@@ -234,11 +234,13 @@ export default {
       this.pages.forEach((item, index) => {
         if (index < 2) {
           const copy = item.cloneNode(true);
+          copy.classList.remove('c-swipe-item');
           copy.classList.add('c-swipe-item-copy');
           fronts.push(copy);
         }
         if (index > this.pages.length - 3) {
           const copy = item.cloneNode(true);
+          copy.classList.remove('c-swipe-item');
           copy.classList.add('c-swipe-item-copy');
           ends.push(copy);
         }
@@ -247,7 +249,7 @@ export default {
       this.copyNum = ends.length;
       // insert node
       while (ends.length) {
-        const item = ends.pop();
+        const item = ends.shift();
         const firstNode = this.$refs.wrapper.querySelector('.c-swipe-item');
         this.$refs.wrapper.insertBefore(item, firstNode);
       }
@@ -563,6 +565,11 @@ export default {
   }
 
   .c-swipe-item{
+    width: 100%;
+    height: 100%;
+    flex: none;
+  }
+  .c-swipe-item-copy{
     width: 100%;
     height: 100%;
     flex: none;
