@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR_NAME="../Cswipe-pages/"
+DIR_NAME="../cswipe-pages/"
 
 cp -r dist $DIR_NAME
 
