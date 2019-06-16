@@ -512,7 +512,7 @@ export default {
         this.$refs.wrapper.style.transform = `translate3d(${d}px, 0, 0)`;
         this.$refs.wrapper.style.transform = `webkikTranslate3d(${d}px, 0, 0)`;
       }
-      function webkitTransform(el, d) {
+      function webkitTransform(d) {
         this.$refs.wrapper.style.webkitTransform = `translate3d(${d}px, 0, 0)`;
         this.$refs.wrapper.style.webkitTransform = `webkitTranslate3d(${d}px, 0, 0)`;
       }
