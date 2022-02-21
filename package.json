@@ -81,7 +81,7 @@
     "phantomjs-prebuilt": "^2.1.16",
     "precss": "^1.4.0",
     "semver": "^5.3.0",
-    "shelljs": "^0.7.4",
+    "shelljs": "^0.8.5",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
     "url-loader": "^0.5.7",
